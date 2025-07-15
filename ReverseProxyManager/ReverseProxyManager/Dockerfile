@@ -7,6 +7,8 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
+# Put all of the settings from the appsettings in here
+# For the files use the default nginx folders /nginx -> /includes /conf.d /ssl /html
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
