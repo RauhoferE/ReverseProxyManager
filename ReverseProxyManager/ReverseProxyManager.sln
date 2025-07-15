@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReverseProxyManager", "ReverseProxyManager\ReverseProxyManager.csproj", "{656A886D-AADB-4A63-8DE5-8AB7DE700AD3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{9C42F92B-575C-48D8-8785-481F6F238792}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{AE3A66D3-DF1B-40B7-ADB9-B1F3C2E68A93}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{656A886D-AADB-4A63-8DE5-8AB7DE700AD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{656A886D-AADB-4A63-8DE5-8AB7DE700AD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{656A886D-AADB-4A63-8DE5-8AB7DE700AD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C42F92B-575C-48D8-8785-481F6F238792}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C42F92B-575C-48D8-8785-481F6F238792}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C42F92B-575C-48D8-8785-481F6F238792}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C42F92B-575C-48D8-8785-481F6F238792}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE3A66D3-DF1B-40B7-ADB9-B1F3C2E68A93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE3A66D3-DF1B-40B7-ADB9-B1F3C2E68A93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE3A66D3-DF1B-40B7-ADB9-B1F3C2E68A93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE3A66D3-DF1B-40B7-ADB9-B1F3C2E68A93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
