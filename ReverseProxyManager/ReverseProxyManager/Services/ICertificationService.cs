@@ -21,6 +21,8 @@ namespace ReverseProxyManager.Services
 
         Task<List<CertificateDto>> GetAllCertificatesAsync(string filter, string sortAfter, bool asc);
 
-        Task<List<IdNameDto>> GetAllCertificatesShortAsync();
+        Task<List<IdNameDto>> GetActiveCertificatesShortAsync();
+
+        Task ImportSSlCertificates();
     }
 }

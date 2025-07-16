@@ -13,6 +13,7 @@ namespace Core.Enums
         validNotBefore,
         validNotAfter,
         issuer,
-        subject
+        subject,
+        fileAttached
     }
 }

@@ -18,6 +18,8 @@ namespace Core.Entities
 
         public long TargetPort { get; set; }
 
+        public bool IsUpToDate { get; set; } = false;   
+
         public bool UsesHttp { get; set; } = false;
 
         public CertificateEntity? Certificate { get; set; } = null;
