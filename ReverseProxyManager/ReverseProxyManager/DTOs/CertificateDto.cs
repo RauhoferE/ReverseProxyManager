@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Core.Entities;
 
-namespace Core.Entities
+namespace ReverseProxyManager.DTOs
 {
-    public class CertificateEntity
+    public class CertificateDto
     {
-        // The filename is a mix between the name and the id
         public int Id { get; set; }
         public string Name { get; set; }
 
@@ -19,12 +14,13 @@ namespace Core.Entities
         public DateTime ValidNotBefore { get; set; }
 
         public DateTime ValidNotAfter { get; set; }
-        
+
         public DateTime LastUpdated { get; set; } = DateTime.Now;
 
         // This is used to determine if the nginx config is containing the new information
         public bool IsUpToDate { get; set; } = false;
 
-        public ServerEntity? ServerEntity { get; set; } = null;
+        public IdNameDto? ServerEntity { get; set; } = null;
+
     }
 }
