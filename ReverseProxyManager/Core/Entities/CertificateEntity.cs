@@ -12,13 +12,13 @@ namespace Core.Entities
         public int Id { get; set; }
         public string Name { get; set; }
 
+        public string Issuer { get; set; }
+
+        public string Subject { get; set; }
+
         public DateTime ValidNotBefore { get; set; }
 
         public DateTime ValidNotAfter { get; set; }
-
-        public long RenewEvery { get; set; } = 1; // in days
-
-        public LovRenewUnit RenewUnit { get; set; }
         
         public DateTime LastUpdated { get; set; } = DateTime.Now;
 

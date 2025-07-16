@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{AE3A66D3-DF1B-40B7-ADB9-B1F3C2E68A93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenewCertitificateScript", "RenewCertitificateScript\RenewCertitificateScript.csproj", "{7A4CE80F-8622-4A44-9D74-92F47FB15061}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{AE3A66D3-DF1B-40B7-ADB9-B1F3C2E68A93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE3A66D3-DF1B-40B7-ADB9-B1F3C2E68A93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE3A66D3-DF1B-40B7-ADB9-B1F3C2E68A93}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7A4CE80F-8622-4A44-9D74-92F47FB15061}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7A4CE80F-8622-4A44-9D74-92F47FB15061}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7A4CE80F-8622-4A44-9D74-92F47FB15061}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7A4CE80F-8622-4A44-9D74-92F47FB15061}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
