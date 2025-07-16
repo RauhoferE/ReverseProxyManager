@@ -158,11 +158,13 @@ namespace ReverseProxyManager.Services
 
                 // If there is no file mark it and deactivate the server if it has any
                 certificate.FileAttached = false;
+                this.ResetCertificateEntity(certificate);
 
                 if (certificate.ServerEntity != null)
                 {
                     certificate.ServerEntity.Active = false;
                     certificate.ServerEntity.IsUpToDate = false;
+                    certificate.ServerEntity.LastUpdated = DateTime.Now;
                 }
             }
 
@@ -208,12 +210,13 @@ namespace ReverseProxyManager.Services
             if (!fileAttached)
             {
                 certificate.FileAttached = false;
-                certificate.LastUpdated = DateTime.Now;
-                certificate.IsUpToDate = false;
-                certificate.Issuer = null;
-                certificate.Subject = null;
-                certificate.ValidNotAfter = null;
-                certificate.ValidNotBefore = null;
+                this.ResetCertificateEntity(certificate);
+                //certificate.LastUpdated = DateTime.Now;
+                //certificate.IsUpToDate = false;
+                //certificate.Issuer = null;
+                //certificate.Subject = null;
+                //certificate.ValidNotAfter = null;
+                //certificate.ValidNotBefore = null;
             }
 
             if (!fileAttached && certificate.ServerEntity != null)
@@ -225,6 +228,16 @@ namespace ReverseProxyManager.Services
 
 
             await this.fileService.CreateNginxConfigAsync(this._dbContext.Servers.Include(x => x.Certificate).ToList());
+        }
+
+        private void ResetCertificateEntity(CertificateEntity certificateEntity)
+        {
+            certificateEntity.LastUpdated = DateTime.Now;
+            certificateEntity.IsUpToDate = false;
+            certificateEntity.Issuer = null;
+            certificateEntity.Subject = null;
+            certificateEntity.ValidNotAfter = null;
+            certificateEntity.ValidNotBefore = null;
         }
     }
 }
