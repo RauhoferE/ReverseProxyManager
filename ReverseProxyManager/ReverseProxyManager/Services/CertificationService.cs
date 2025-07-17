@@ -26,6 +26,8 @@ namespace ReverseProxyManager.Services
             this.mapper = mapper;
         }
 
+        // This method adds a new certificate to the database.
+        // This is never called via the controller but only via the file service when a new certificate is found in the file system.
         public async Task AddNewCertificateAsync(CreateCertificateRequest request)
         {
             var existingCertificate = this._dbContext.Certificates.FirstOrDefault(x => x.Name == request.Name);
@@ -62,11 +64,14 @@ namespace ReverseProxyManager.Services
             }
 
             bool recreateConfig = false;
+            // If there is a server associated with the certificate deactivate it because the ssl file is not found anymore
+            // Also receraete the config
             if (existingCertificate.ServerEntity != null)
             {
                 existingCertificate.ServerEntity.IsUpToDate = false;
                 existingCertificate.ServerEntity.LastUpdated = DateTime.Now;
                 existingCertificate.ServerEntity.Active = false;
+                recreateConfig = true;
             }
 
             await this.fileService.DeleteSSlCertificateAsync(existingCertificate.Name);
@@ -117,7 +122,7 @@ namespace ReverseProxyManager.Services
 
         public async Task<List<IdNameDto>> GetActiveCertificatesShortAsync()
         {
-            return this.mapper.Map<List<IdNameDto>>(this._dbContext.Certificates.ToList());
+            return this.mapper.Map<List<IdNameDto>>(this._dbContext.Certificates.Where(x => x.FileAttached).ToList());
         }
 
         public async Task ImportSSlCertificates()
@@ -138,7 +143,10 @@ namespace ReverseProxyManager.Services
                         Issuer = certificate.Issuer,
                         Subject = certificate.Subject,
                         ValidNotAfter = certificate.ValidNotAfter,
-                        ValidNotBefore = certificate.ValidNotBefore
+                        ValidNotBefore = certificate.ValidNotBefore,
+                        // In case the previous certificate file was not found and the certificate was disabled
+                        // Here we know that the file exists so set the boolean to true
+                        FileAttached = true
                     });
                     continue; 
                 }
@@ -173,6 +181,8 @@ namespace ReverseProxyManager.Services
             await this.fileService.CreateNginxConfigAsync(this._dbContext.Servers.Include(x => x.Certificate).ToList());
         }
 
+        // This method updates a certificate in the database.
+        // This is never called via the controller but only via the file service when a updated certificate is found in the file system.
         public async Task UpdateCertificateAsync(int id, EditCertificateRequest request)
         {
             var certificate = this._dbContext.Certificates.FirstOrDefault(x => x.Id == id);
@@ -187,9 +197,11 @@ namespace ReverseProxyManager.Services
             certificate.ValidNotBefore = request.ValidNotBefore;
             certificate.ValidNotAfter = request.ValidNotAfter;
             certificate.LastUpdated = DateTime.Now;
+            certificate.FileAttached = request.FileAttached;
 
             await this._dbContext.SaveChangesAsync();
         }
+
 
         public async Task UpdateCertificateNameAsync(int id, string name)
         {

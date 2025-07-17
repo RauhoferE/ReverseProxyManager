@@ -9,5 +9,7 @@
         public DateTime ValidNotBefore { get; set; }
 
         public DateTime ValidNotAfter { get; set; }
+
+        public bool FileAttached { get; set; }
     }
 }
