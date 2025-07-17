@@ -72,8 +72,14 @@ namespace ReverseProxyManager.Services
 
         public async Task ApplyNewConfigAsync()
         {
-            var servers = this.dbContext.Servers.Include(x => x.Certificate).ToList();
-            await this.fileService.CreateNginxConfigAsync(servers);
+            var servers = this.dbContext.Servers.Include(x => x.Certificate);
+            foreach (var server in servers)
+            {
+                server.IsUpToDate = true;
+            }
+
+            await this.dbContext.SaveChangesAsync();
+            await this.fileService.CreateNginxConfigAsync(servers.Where(x => x.Active).ToList());
         }
 
         public async Task DeleteServerAsync(int id)
@@ -117,9 +123,37 @@ namespace ReverseProxyManager.Services
             return this.mapper.Map<List<ServerDto>>(servers.ToList());
         }
 
-        public Task UpdateServerAsync(int id, EditServerRequest request)
+        public async Task UpdateServerAsync(int id, EditServerRequest request)
         {
-            throw new NotImplementedException();
+            var exisitingServer = this.dbContext.Servers.FirstOrDefault(x => x.Id == id);
+
+            if (exisitingServer == null)
+            {
+                throw new AlreadyExistsException($"Server with name {exisitingServer.Name} doesnt exists!");
+            }
+
+            CertificateEntity? certificate = null;
+
+            if (request.CertificateId > 0)
+            {
+                certificate = this.dbContext.Certificates.FirstOrDefault(x => x.Id == request.CertificateId);
+            }
+
+            if (request.CertificateId > 0 && certificate == null)
+            {
+                throw new NotFoundException($"Certificate with id {request.CertificateId} not found");
+            }
+
+            exisitingServer.Name = request.Name;
+            exisitingServer.UsesHttp = request.UsesHttp;
+            exisitingServer.RedirectsToHttps = request.RedirectsToHttps;
+            exisitingServer.Active = request.Active;
+            exisitingServer.RawSettings = request.RawSettings;
+            exisitingServer.Target = request.Target;
+            exisitingServer.TargetPort = request.TargetPort;
+            exisitingServer.IsUpToDate = false;
+            exisitingServer.Certificate = certificate;
+            await this.dbContext.SaveChangesAsync();
         }
     }
 }

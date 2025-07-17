@@ -19,11 +19,15 @@ namespace ReverseProxyManager.Services
 
         private readonly IMapper mapper;
 
-        public CertificationService(ReverseProxyDbContext dbContext, IFileService fileService, IMapper mapper)
+        private readonly IManagementService managementService;
+
+        public CertificationService(ReverseProxyDbContext dbContext, IFileService fileService, IMapper mapper, 
+            IManagementService managementService)
         {
             this._dbContext = dbContext;
             this.fileService = fileService;
             this.mapper = mapper;
+            this.managementService = managementService;
         }
 
         // This method adds a new certificate to the database.
@@ -71,6 +75,7 @@ namespace ReverseProxyManager.Services
                 existingCertificate.ServerEntity.IsUpToDate = false;
                 existingCertificate.ServerEntity.LastUpdated = DateTime.Now;
                 existingCertificate.ServerEntity.Active = false;
+                existingCertificate.ServerEntity.RedirectsToHttps = false;
                 recreateConfig = true;
             }
 
@@ -81,7 +86,7 @@ namespace ReverseProxyManager.Services
 
             if (recreateConfig)
             {
-                await this.fileService.CreateNginxConfigAsync(this._dbContext.Servers.Include(x => x.Certificate ).ToList());
+                await this.managementService.ApplyNewConfigAsync();
             }
         }
 
@@ -173,12 +178,13 @@ namespace ReverseProxyManager.Services
                     certificate.ServerEntity.Active = false;
                     certificate.ServerEntity.IsUpToDate = false;
                     certificate.ServerEntity.LastUpdated = DateTime.Now;
+                    certificate.ServerEntity.RedirectsToHttps = false;
                 }
             }
 
             await this._dbContext.SaveChangesAsync();
 
-            await this.fileService.CreateNginxConfigAsync(this._dbContext.Servers.Include(x => x.Certificate).ToList());
+            await this.managementService.ApplyNewConfigAsync();
         }
 
         // This method updates a certificate in the database.
@@ -236,10 +242,10 @@ namespace ReverseProxyManager.Services
                 certificate.ServerEntity.Active = false;
                 certificate.ServerEntity.LastUpdated = DateTime.Now;
                 certificate.ServerEntity.IsUpToDate = false;
+                certificate.ServerEntity.RedirectsToHttps = false;
             }
 
-
-            await this.fileService.CreateNginxConfigAsync(this._dbContext.Servers.Include(x => x.Certificate).ToList());
+            await this.managementService.ApplyNewConfigAsync();
         }
 
         private void ResetCertificateEntity(CertificateEntity certificateEntity)
