@@ -206,7 +206,7 @@ namespace ReverseProxyManager.Services
             var certificateFiles = await this.fileService.GetSSlCertificateNamesAsync();
 
             // If there is no file attached set t to inactive and remove all the data
-            var fileAttached = certificateFiles.Contains(name);
+            var fileAttached = await this.fileService.CheckForValidFilesAsync(name);
             if (!fileAttached)
             {
                 certificate.FileAttached = false;

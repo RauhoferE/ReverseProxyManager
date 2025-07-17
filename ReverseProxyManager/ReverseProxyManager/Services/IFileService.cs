@@ -9,7 +9,7 @@ namespace ReverseProxyManager.Services
 
         Task<List<string>> GetSSlCertificateNamesAsync();
 
-        Task<bool> CheckForKeyFile(string fileName);
+        Task<bool> CheckForValidFilesAsync(string fileName);
 
         Task DeleteSSlCertificateAsync(string name);
 
