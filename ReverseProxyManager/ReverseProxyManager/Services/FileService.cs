@@ -22,9 +22,59 @@ namespace ReverseProxyManager.Services
             return File.Exists(Path.Combine(SSL_FOLDER, $"{fileName}.crt")) && File.Exists(Path.Combine(SSL_FOLDER, $"{fileName}.key"));
         }
 
-        public Task CreateNginxConfigAsync(List<ServerEntity> serverEntities)
+        public async Task CreateNginxConfigAsync(List<ServerEntity> serverEntities)
         {
-            throw new NotImplementedException();
+            var configTxt = "";
+
+            // Read the server config
+            foreach (var server in serverEntities)
+            {
+                // If the user added his own settings write only them into the config
+                if (server.RawSettings != null)
+                {
+                    configTxt = configTxt + server.RawSettings;
+                    continue;
+                }
+
+                // Incase the user wants http to
+                var httpString = server.UsesHttp ? "listen 80;" : string.Empty;    
+                // https specific settings
+                var httpsString = server.Certificate != null ? "listen 443 ssl http2;" : string.Empty;
+                var sslCert = server.Certificate != null ? $"ssl_certificate {Path.Combine(SSL_FOLDER, server.Certificate.Name)}.crt;" : string.Empty;
+                var sslKey = server.Certificate != null ? $"ssl_certificate_key {Path.Combine(SSL_FOLDER, server.Certificate.Name)}.key;" : string.Empty;
+                var httpRedirectionString = server.RedirectsToHttps ? $@"
+# Redirect {server.Name} to https
+server {{
+    listen 80;
+    server_name {server.Name};
+
+    
+    return 301 https://{server.Name}$request_uri;
+}}
+" : string.Empty;
+
+                configTxt = configTxt + $@"
+## {server.Name}
+server {{
+    {httpsString}
+    {httpsString}
+    server_name {server.Name};
+    {sslCert}
+    {sslKey}
+    include /etc/nginx/includes/ssl.conf;
+    location / {{
+        include /etc/nginx/includes/proxy.conf;
+        proxy_pass {server.Target}:{server.TargetPort};
+    }}
+    access_log off;
+    error_log /var/log/nginx/error.log error;
+
+}}
+{httpRedirectionString}
+";
+            }
+
+            File.WriteAllText(Path.Combine(NGINX_FOLDER, "default.conf"), configTxt);
         }
 
         // Deletes the certificate and key
