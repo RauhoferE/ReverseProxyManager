@@ -214,9 +214,16 @@ namespace ReverseProxyManager.Services
             var certificate = this._dbContext.Certificates
                 .Include(x => x.ServerEntity).FirstOrDefault(x => x.Id == id);
 
+            var certificateWithSameName = this._dbContext.Certificates.FirstOrDefault(x => x.Name == name);
+
             if (certificate == null)
             {
                 throw new NotFoundException($"Certificate with id {id} not found.");
+            }
+
+            if (certificateWithSameName != null)
+            {
+                throw new AlreadyExistsException($"Certificate with name {name} already exists.");
             }
 
             certificate.Name = name;
