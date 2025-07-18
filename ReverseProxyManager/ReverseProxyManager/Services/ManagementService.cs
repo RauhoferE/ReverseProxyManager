@@ -26,7 +26,7 @@ namespace ReverseProxyManager.Services
             this.mapper = mapper;
         }
 
-        public async Task AddNewServerAsync(CreateServerRequest request)
+        public async Task AddNewServerAsync(EditServerRequest request)
         {
             var exisitingServer = this.dbContext.Servers.FirstOrDefault(x => x.Name == request.Name);
 

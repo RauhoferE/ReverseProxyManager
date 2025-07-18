@@ -4,6 +4,8 @@ using ReverseProxyManager.Services;
 
 namespace ReverseProxyManager.Controllers
 {
+    [ApiController]
+    [Route(ApiRoutes.Base)]
     public class ManagementController : Controller
     {
         private readonly IManagementService managementService;
@@ -22,7 +24,7 @@ namespace ReverseProxyManager.Controllers
         }
 
         [HttpPost(ApiRoutes.Management.GetServers)]
-        public async Task<IActionResult> AddNewServer([FromBody] CreateServerRequest request)
+        public async Task<IActionResult> AddNewServer([FromBody] EditServerRequest request)
         {
             await this.managementService.AddNewServerAsync(request);
             return Ok();

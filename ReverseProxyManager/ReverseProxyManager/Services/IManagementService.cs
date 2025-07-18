@@ -6,7 +6,7 @@ namespace ReverseProxyManager.Services
 {
     public interface IManagementService
     {
-        Task AddNewServerAsync(CreateServerRequest request);
+        Task AddNewServerAsync(EditServerRequest request);
 
         Task DeleteServerAsync(int id);
 

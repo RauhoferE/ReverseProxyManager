@@ -4,6 +4,8 @@ using ReverseProxyManager.Services;
 
 namespace ReverseProxyManager.Controllers
 {
+    [ApiController]
+    [Route(ApiRoutes.Base)]
     public class CertificateController : Controller
     {
         private readonly ICertificationService certificationService;

@@ -8,11 +8,11 @@
 
         private const string Controller = "[controller]";
 
-        public static string Base = Api + "/" + Version + "/" + Controller;
+        public const string Base = Api + "/" + Version + "/" + Controller;
 
         public static class Auth
         {
-
+            public const string Login = "login";
         }
 
         public static class Certification
