@@ -19,9 +19,7 @@
         {
             public const string RescanCertificates = "rescan";
 
-            public const string DeleteCertificate = "{id:int}";
-
-            public const string UpdateCertificateName = "{id:int}/update-name";
+            public const string DeleteAndUpdateCertificate = "{id:int}";
 
             public const string GetAllCertificates = "";
 
@@ -30,6 +28,9 @@
 
         public static class Management
         {
+            public const string GetServers = "";
+            public const string UpdateAndDeleteServer = "{id:int}";
+            public const string ApplyConfig = "apply-config";
 
         }
     }

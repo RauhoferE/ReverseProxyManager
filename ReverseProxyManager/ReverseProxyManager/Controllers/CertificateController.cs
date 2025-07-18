@@ -19,7 +19,7 @@ namespace ReverseProxyManager.Controllers
             return Ok();
         }
 
-        [HttpDelete(ApiRoutes.Certification.DeleteCertificate)]
+        [HttpDelete(ApiRoutes.Certification.DeleteAndUpdateCertificate)]
         public async Task<IActionResult> DeleteCertificate([FromRoute] int id)
         {
             await this.certificationService.DeleteCertificateAsync(id);
