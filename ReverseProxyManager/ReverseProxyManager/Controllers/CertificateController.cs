@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ReverseProxyManager.Requests;
 using ReverseProxyManager.Services;
 
 namespace ReverseProxyManager.Controllers
@@ -26,10 +27,10 @@ namespace ReverseProxyManager.Controllers
             return Ok();
         }
 
-        [HttpPut(ApiRoutes.Certification.UpdateCertificateName)]
-        public async Task<IActionResult> UpdateCertificateName([FromRoute] int id, [FromQuery] string name)
+        [HttpPut(ApiRoutes.Certification.DeleteAndUpdateCertificate)]
+        public async Task<IActionResult> UpdateCertificateName([FromRoute] int id, [FromBody] UpdateCertificateNameRequest request)
         {
-            await this.certificationService.UpdateCertificateNameAsync(id, name);
+            await this.certificationService.UpdateCertificateNameAsync(id, request.Name);
             return Ok();
         }
 
