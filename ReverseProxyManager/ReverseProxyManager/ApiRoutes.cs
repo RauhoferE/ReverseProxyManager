@@ -22,6 +22,10 @@
             public const string DeleteCertificate = "{id:int}";
 
             public const string UpdateCertificateName = "{id:int}/update-name";
+
+            public const string GetAllCertificates = "";
+
+            public const string GetActiveCertificates = "active";
         }
 
         public static class Management

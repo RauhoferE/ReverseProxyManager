@@ -32,5 +32,19 @@ namespace ReverseProxyManager.Controllers
             await this.certificationService.UpdateCertificateNameAsync(id, name);
             return Ok();
         }
+
+        [HttpGet(ApiRoutes.Certification.GetAllCertificates)]
+        public async Task<IActionResult> GetAllCertificates([FromQuery] string? filter, [FromQuery] string sortAfter, [FromQuery] bool asc)
+        {
+            var results = await this.certificationService.GetAllCertificatesAsync(filter, sortAfter, asc);
+            return Ok(results);
+        }
+
+        [HttpGet(ApiRoutes.Certification.GetActiveCertificates)]
+        public async Task<IActionResult> GetActiveCertiicates()
+        {
+            var results = await this.certificationService.GetActiveCertificatesShortAsync();
+            return Ok(results);
+        }
     }
 }
