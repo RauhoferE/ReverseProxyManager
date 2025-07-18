@@ -1,4 +1,7 @@
 ﻿
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using ReverseProxyManager.DTOs;
 using ReverseProxyManager.Settings;
 
 namespace ReverseProxyManager.Services
@@ -12,19 +15,29 @@ namespace ReverseProxyManager.Services
             this.userSettings = userSettings;
         }
 
-        public async Task Authenticate(string username, string password)
+        public async Task<CookieDto> Authenticate(string username, string password)
         {
-            if (this.userSettings.Username == username && this.userSettings.Password == password;)
+            if (this.userSettings.Username == username && this.userSettings.Password == password)
             {
-                // TOOD: Return auth cookie
+                var claims = new List<Claim>()
+                {
+                    new Claim(ClaimTypes.Name, username)
+                };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                return new CookieDto()
+                {
+                    ClaimsIdentity = claimsIdentity,
+                    AuthenticationProperties = new Microsoft.AspNetCore.Authentication.AuthenticationProperties()
+                    {
+                        AllowRefresh = true,
+                        IssuedUtc = DateTime.Now,
+                    }
+                    
+                };
             }
             
             throw new UnauthorizedAccessException("Invalid username or password.");
-        }
-
-        public Task Logout()
-        {
-            throw new NotImplementedException();
         }
     }
 }

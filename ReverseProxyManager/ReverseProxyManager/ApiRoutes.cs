@@ -13,6 +13,7 @@
         public static class Auth
         {
             public const string Login = "login";
+            public const string Logout = "logout";
         }
 
         public static class Certification

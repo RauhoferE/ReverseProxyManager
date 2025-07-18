@@ -1,9 +1,9 @@
-﻿namespace ReverseProxyManager.Services
+﻿using ReverseProxyManager.DTOs;
+
+namespace ReverseProxyManager.Services
 {
     public interface IUserService
     {
-        Task Authenticate(string username, string password);
-
-        Task Logout();
+        Task<CookieDto> Authenticate(string username, string password);
     }
 }
