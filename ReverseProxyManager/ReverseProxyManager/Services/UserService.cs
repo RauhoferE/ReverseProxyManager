@@ -1,6 +1,7 @@
 ﻿
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Options;
 using ReverseProxyManager.DTOs;
 using ReverseProxyManager.Settings;
 
@@ -10,9 +11,9 @@ namespace ReverseProxyManager.Services
     {
         private readonly UserSettings userSettings;
 
-        public UserService(UserSettings userSettings)
+        public UserService(IOptions<UserSettings> userSettings)
         {
-            this.userSettings = userSettings;
+            this.userSettings = userSettings.Value;
         }
 
         public async Task<CookieDto> Authenticate(string username, string password)
