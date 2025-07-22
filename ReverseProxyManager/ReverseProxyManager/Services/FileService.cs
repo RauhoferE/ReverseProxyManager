@@ -118,8 +118,8 @@ server {{
                     Issuer = certEntity.Issuer,
                     Name = certName,
                     Subject = certEntity.Subject,
-                    ValidNotAfter = DateTime.Parse(certEntity.GetEffectiveDateString()),
-                    ValidNotBefore = DateTime.Parse(certEntity.GetExpirationDateString()),
+                    ValidNotBefore = DateTime.Parse(certEntity.GetEffectiveDateString()),
+                    ValidNotAfter = DateTime.Parse(certEntity.GetExpirationDateString()),
                 });
             }
 

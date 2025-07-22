@@ -1,8 +1,10 @@
-﻿using Core.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Data.SqlTypes;
+using Core.Entities;
 
 namespace ReverseProxyManager.Requests
 {
-    public class EditServerRequest
+    public class EditServerRequest : IValidatableObject
     {
         public string Name { get; set; }
 
@@ -22,5 +24,73 @@ namespace ReverseProxyManager.Requests
         // This is basically replacing everything thats automatically gets generated for the default.conf
         // Use at yout own risk
         public string? RawSettings { get; set; } = null;
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (string.IsNullOrEmpty(Name) || Name.Length < 1 || Name.Length > 100)
+            {
+                yield return new ValidationResult(
+                    $"",
+                    new[] { nameof(Name) });
+            }
+
+            if (string.IsNullOrEmpty(Target) || Target.Length < 1 || Target.Length > 250 || !IsValidHttpAddress(Target))
+            {
+                yield return new ValidationResult(
+                    $"",
+                    new[] { nameof(Target) });
+            }
+
+            if (RedirectsToHttps && CertificateId < 0)
+            {
+                yield return new ValidationResult(
+                    $"When redirecting to https you need to assign a certificate.",
+                    new[] { nameof(RedirectsToHttps) });
+            }
+
+            if (RedirectsToHttps && UsesHttp)
+            {
+                yield return new ValidationResult(
+                    $"If you redirect to HTTPS, you cannot use HTTP at the same time.",
+                    new[] { nameof(RedirectsToHttps) });
+            }
+
+            if (TargetPort < 0 || TargetPort > 65536)
+            {
+                yield return new ValidationResult(
+                    $"",
+                    new[] { nameof(TargetPort) });
+            }
+        }
+
+        private bool IsValidHttpAddress(string urlString)
+        {
+            Uri uri = null;
+            bool success = Uri.TryCreate(urlString, UriKind.Absolute, out uri);
+
+            if (success)
+            {
+                // 2. Additional Scheme Check:
+                // Ensure the scheme is specifically HTTP or HTTPS.
+                // This prevents valid URIs like "ftp://", "mailto:", "file://", or "javascript:" from being considered valid HTTP addresses.
+                if (uri!.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
+                {
+                    // 3. Optional: Additional Hostname/Port/Path checks if needed
+                    // For instance, you might want to ensure the host is not empty,
+                    // or if it's an IP address, that it's a valid IP.
+                    // Uri.IsLoopback: Check if it's localhost or loopback IP
+                    // Uri.IsFile: Check if it's a file path
+                    // Uri.IsUnc: Check if it's a UNC path (network share)
+
+                    // For a general "valid HTTP address", the scheme check is often sufficient
+                    // as TryCreate already handles the general well-formedness.
+                    return true;
+                }
+            }
+
+            // If Uri.TryCreate failed, or if the scheme was not HTTP/HTTPS
+            uri = null; // Explicitly set to null if validation failed
+            return false;
+        }
     }
 }

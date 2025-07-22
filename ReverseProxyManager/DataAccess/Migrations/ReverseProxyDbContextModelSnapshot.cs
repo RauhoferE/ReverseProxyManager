@@ -40,7 +40,7 @@ namespace DataAccess.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("ServerId")
+                    b.Property<int?>("ServerId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Subject")
@@ -106,9 +106,7 @@ namespace DataAccess.Migrations
                 {
                     b.HasOne("Core.Entities.ServerEntity", "ServerEntity")
                         .WithOne("Certificate")
-                        .HasForeignKey("Core.Entities.CertificateEntity", "ServerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Core.Entities.CertificateEntity", "ServerId");
 
                     b.Navigation("ServerEntity");
                 });

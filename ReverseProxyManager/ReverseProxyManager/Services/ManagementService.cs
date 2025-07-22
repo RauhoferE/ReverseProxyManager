@@ -47,10 +47,15 @@ namespace ReverseProxyManager.Services
                 throw new NotFoundException($"Certificate with id {request.CertificateId} not found");
             }
 
+            if (request.CertificateId > 0 && certificate.ServerId > 0)
+            {
+                throw new AlreadyExistsException($"Certificate with id {request.CertificateId} is already assigned to another server.");
+            }
+
             // TODO: Check in validation if:
             // http and httpredirect are not both true
             // https true and certificate is not null
-            
+
             // Attention the new server is not in the nginx config yet
             // The server is only in the config if IsUpToDate is true
             var serverEntity = new ServerEntity

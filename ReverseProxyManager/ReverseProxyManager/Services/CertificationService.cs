@@ -48,10 +48,10 @@ namespace ReverseProxyManager.Services
                 Subject = request.Subject,
                 ValidNotAfter = request.ValidNotAfter,
                 ValidNotBefore = request.ValidNotBefore,
-                FileAttached = true,
+                FileAttached = true
             };
 
-            this._dbContext.Add(newCertificate);
+            this._dbContext.Certificates.Add(newCertificate);
             await this._dbContext.SaveChangesAsync();
         }
 

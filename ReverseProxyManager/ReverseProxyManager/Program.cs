@@ -2,8 +2,6 @@ using ReverseProxyManager.MappingProfiles;
 using ReverseProxyManager.Services;
 using ReverseProxyManager.Settings;
 using Serilog;
-using FluentValidation;
-using ReverseProxyManager.Validation;
 using System.Reflection;
 using ReverseProxyManager.Middleware;
 using DataAccess;
@@ -100,9 +98,6 @@ namespace ReverseProxyManager
             builder.Services.AddAuthorization(options =>
             {
             });
-
-            //Validation
-            builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
             builder.Services.AddControllers(x =>
             {

@@ -19,7 +19,7 @@ namespace ReverseProxyManager.Controllers
         }
 
         [HttpGet(ApiRoutes.Management.GetServers)]
-        public async Task<IActionResult> GetServers([FromQuery] string filter, [FromQuery] string sortAfter, [FromQuery] bool asc)
+        public async Task<IActionResult> GetServers([FromQuery] string? filter, [FromQuery] string sortAfter, [FromQuery] bool asc)
         {
             var results = await this.managementService.GetServerEntitiesAsync(filter, sortAfter, asc);
             return Ok(results);

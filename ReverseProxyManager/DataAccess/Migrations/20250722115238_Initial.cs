@@ -46,7 +46,7 @@ namespace DataAccess.Migrations
                     LastUpdated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     IsUpToDate = table.Column<bool>(type: "INTEGER", nullable: false),
                     FileAttached = table.Column<bool>(type: "INTEGER", nullable: false),
-                    ServerId = table.Column<int>(type: "INTEGER", nullable: false)
+                    ServerId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -55,8 +55,7 @@ namespace DataAccess.Migrations
                         name: "FK_Certificates_Servers_ServerId",
                         column: x => x.ServerId,
                         principalTable: "Servers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
