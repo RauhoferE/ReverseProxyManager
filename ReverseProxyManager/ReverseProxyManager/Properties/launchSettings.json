@@ -3,9 +3,11 @@
     "http": {
       "commandName": "Project",
       "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
+        "environmentVariables": {
+            "ASPNETCORE_ENVIRONMENT": "Development",
+            "Username": "test",
+            "Password": "test"
+        },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5281"
     },

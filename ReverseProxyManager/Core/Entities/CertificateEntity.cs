@@ -27,6 +27,9 @@ namespace Core.Entities
 
         public bool FileAttached { get; set; } = true;
 
+        // FK
+        public int ServerId { get; set; }
+
         public ServerEntity? ServerEntity { get; set; } = null;
     }
 }

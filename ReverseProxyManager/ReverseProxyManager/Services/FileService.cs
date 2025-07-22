@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 using Core.Entities;
+using Core.Helpers;
 using ReverseProxyManager.Exceptions;
 using ReverseProxyManager.Requests;
 
@@ -7,10 +8,6 @@ namespace ReverseProxyManager.Services
 {
     public class FileService : IFileService
     {
-        // TODO: Change to correct linux folders for the docker container
-        public const string NGINX_FOLDER = "";
-
-        public const string SSL_FOLDER = "";
 
         public FileService()
         {
@@ -19,7 +16,8 @@ namespace ReverseProxyManager.Services
 
         public async Task<bool> CheckForValidFilesAsync(string fileName)
         {
-            return File.Exists(Path.Combine(SSL_FOLDER, $"{fileName}.crt")) && File.Exists(Path.Combine(SSL_FOLDER, $"{fileName}.key"));
+            return File.Exists(Path.Combine(FolderHelper.GetSSlFolderPath(), $"{fileName}.crt")) && 
+                File.Exists(Path.Combine(FolderHelper.GetSSlFolderPath(), $"{fileName}.key"));
         }
 
         public async Task CreateNginxConfigAsync(List<ServerEntity> serverEntities)
@@ -40,8 +38,8 @@ namespace ReverseProxyManager.Services
                 var httpString = server.UsesHttp ? "listen 80;" : string.Empty;    
                 // https specific settings
                 var httpsString = server.Certificate != null ? "listen 443 ssl http2;" : string.Empty;
-                var sslCert = server.Certificate != null ? $"ssl_certificate {Path.Combine(SSL_FOLDER, server.Certificate.Name)}.crt;" : string.Empty;
-                var sslKey = server.Certificate != null ? $"ssl_certificate_key {Path.Combine(SSL_FOLDER, server.Certificate.Name)}.key;" : string.Empty;
+                var sslCert = server.Certificate != null ? $"ssl_certificate {Path.Combine(FolderHelper.GetSSlFolderPath(), server.Certificate.Name)}.crt;" : string.Empty;
+                var sslKey = server.Certificate != null ? $"ssl_certificate_key {Path.Combine(FolderHelper.GetSSlFolderPath(), server.Certificate.Name)}.key;" : string.Empty;
                 var httpRedirectionString = server.RedirectsToHttps ? $@"
 # Redirect {server.Name} to https
 server {{
@@ -74,14 +72,14 @@ server {{
 ";
             }
 
-            File.WriteAllText(Path.Combine(NGINX_FOLDER, "default.conf"), configTxt);
+            File.WriteAllText(FolderHelper.GetNginxConfigFilePath(), configTxt);
         }
 
         // Deletes the certificate and key
         public async Task DeleteSSlCertificateAsync(string name)
         {
-            var crtFile = Path.Combine(SSL_FOLDER, $"{name}.crt");
-            var keyFile = Path.Combine(SSL_FOLDER, $"{name}.key");
+            var crtFile = Path.Combine(FolderHelper.GetSSlFolderPath(), $"{name}.crt");
+            var keyFile = Path.Combine(FolderHelper.GetSSlFolderPath(), $"{name}.key");
             if (File.Exists(crtFile))
             {
                 File.Delete(crtFile);
@@ -95,7 +93,7 @@ server {{
 
         public async Task<List<string>> GetSSlCertificateNamesAsync()
         {
-            var fileNames = Directory.GetFiles(SSL_FOLDER, "*.crt");
+            var fileNames = Directory.GetFiles(FolderHelper.GetSSlFolderPath(), "*.crt");
             return fileNames
                 .Select(file => Path.GetFileNameWithoutExtension(file))
                 .ToList();
@@ -114,7 +112,7 @@ server {{
                     throw new NotFoundException($"Some files are missing for {certName}. Please ensure that there is a .crt and .key file.");
                 }
 
-                var certEntity = X509Certificate2.CreateFromCertFile(Path.Combine(SSL_FOLDER, $"{certName}.crt"));
+                var certEntity = X509Certificate2.CreateFromCertFile(Path.Combine(FolderHelper.GetSSlFolderPath(), $"{certName}.crt"));
                 certificates.Add(new CreateCertificateRequest()
                 {
                     Issuer = certEntity.Issuer,

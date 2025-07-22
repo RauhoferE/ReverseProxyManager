@@ -8,7 +8,7 @@ namespace ReverseProxyManager.Middleware
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            if (context.ModelState.IsValid)
+            if (!context.ModelState.IsValid)
             {
                 var errorsInModelState = context.ModelState
                     .Where(x => x.Value.Errors.Count > 0)

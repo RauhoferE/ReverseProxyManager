@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ReverseProxyManager.Requests;
 using ReverseProxyManager.Services;
 
@@ -6,6 +7,7 @@ namespace ReverseProxyManager.Controllers
 {
     [ApiController]
     [Route(ApiRoutes.Base)]
+    [Authorize()]
     public class ManagementController : Controller
     {
         private readonly IManagementService managementService;

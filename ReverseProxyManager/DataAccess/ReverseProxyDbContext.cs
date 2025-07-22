@@ -38,6 +38,7 @@ namespace DataAccess
                 entity.HasKey(e => e.Id);
                 entity.Property(se => se.Id).ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+                entity.HasOne(e => e.ServerEntity).WithOne(e => e.Certificate).HasForeignKey<CertificateEntity>(e => e.ServerId);
             });
 
             //modelBuilder.Entity<LovRenewUnit>(entity =>

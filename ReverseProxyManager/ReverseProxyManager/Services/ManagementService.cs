@@ -153,6 +153,7 @@ namespace ReverseProxyManager.Services
             exisitingServer.TargetPort = request.TargetPort;
             exisitingServer.IsUpToDate = false;
             exisitingServer.Certificate = certificate;
+            exisitingServer.LastUpdated = DateTime.Now;
             await this.dbContext.SaveChangesAsync();
         }
     }

@@ -22,7 +22,5 @@ namespace ReverseProxyManager.Requests
         // This is basically replacing everything thats automatically gets generated for the default.conf
         // Use at yout own risk
         public string? RawSettings { get; set; } = null;
-
-        public DateTime LastUpdated { get; set; } = DateTime.Now;
     }
 }

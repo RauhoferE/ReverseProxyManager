@@ -11,9 +11,9 @@ namespace ReverseProxyManager.Services
     {
         private readonly UserSettings userSettings;
 
-        public UserService(IOptions<UserSettings> userSettings)
+        public UserService(UserSettings userSettings)
         {
-            this.userSettings = userSettings.Value;
+            this.userSettings = userSettings;
         }
 
         public async Task<CookieDto> Authenticate(string username, string password)

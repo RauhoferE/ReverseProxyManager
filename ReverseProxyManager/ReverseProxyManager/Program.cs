@@ -9,6 +9,9 @@ using ReverseProxyManager.Middleware;
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Core.Helpers;
+using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ReverseProxyManager
 {
@@ -16,6 +19,9 @@ namespace ReverseProxyManager
     {
         public static void Main(string[] args)
         {
+            // Create required system folders
+            FolderHelper.CreateSystemFolders();
+
             var builder = WebApplication.CreateBuilder(args);
 
             var configuration = new ConfigurationBuilder()
@@ -33,7 +39,14 @@ namespace ReverseProxyManager
             builder.Services.AddControllers();
 
             // Settings
-            builder.Services.Configure<UserSettings>(builder.Configuration.GetSection("UserSettings"));
+            // Get the values from the env variables like in docker
+            var username = builder.Configuration["Username"];
+            var password = builder.Configuration["Password"];
+            builder.Services.AddSingleton<UserSettings>(new UserSettings()
+            {
+                Username = username ?? "test",
+                Password = password ?? "password"
+            });
 
             // Automapper
             builder.Services.AddAutoMapper(x =>
@@ -47,11 +60,6 @@ namespace ReverseProxyManager
                 options.Filters.Add<ValidationFilter>();
             });
 
-            builder.Services.AddControllers(x =>
-            {
-                x.Filters.Add<HttpResponseExceptionFilter>();
-            });
-
             // Cors
             builder.Services.AddCors(options =>
             {
@@ -63,8 +71,9 @@ namespace ReverseProxyManager
             });
 
             // Db
+            var dbConnection = FolderHelper.GetSqliteFilePath();
             builder.Services.AddDbContext<ReverseProxyDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlite($"Data Source={dbConnection}"));
 
             // Authentication
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -72,6 +81,19 @@ namespace ReverseProxyManager
                 {
                     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
                     options.SlidingExpiration = true;
+                    options.Events = new CookieAuthenticationEvents
+                    {
+                        OnRedirectToLogin = context =>
+                        {
+                            context.Response.StatusCode = 401; // Unauthorized
+                            return Task.CompletedTask;
+                        },
+                        OnRedirectToAccessDenied = context =>
+                        {
+                            context.Response.StatusCode = 403; // Forbidden
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
             // Authorization
@@ -82,6 +104,11 @@ namespace ReverseProxyManager
             //Validation
             builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
+            builder.Services.AddControllers(x =>
+            {
+                x.Filters.Add<HttpResponseExceptionFilter>();
+            });
+
             // Services
             builder.Services.AddTransient<IFileService, FileService>();
             builder.Services.AddTransient<ICertificationService, CertificationService>();
@@ -89,6 +116,9 @@ namespace ReverseProxyManager
             builder.Services.AddTransient<IManagementService, ManagementService>();
 
             var app = builder.Build();
+
+            //  Ensure Db Created and migrations applied
+            CreateDbAndApplyMigration(app);
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -106,11 +136,62 @@ namespace ReverseProxyManager
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+            app.MapControllers();
 
             app.Run();
+        }
+
+        private static void CreateDbAndApplyMigration(WebApplication app)
+        {
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var logger = services.GetRequiredService<ILogger<Program>>(); // For logging
+                try
+                {
+                    var context = services.GetRequiredService<ReverseProxyDbContext>();
+
+                    // Optional: Implement retry logic for database connection readiness
+                    var maxRetries = 5;
+                    var retryDelay = TimeSpan.FromSeconds(10); // Wait 10 seconds between retries
+
+                    for (int i = 0; i < maxRetries; i++)
+                    {
+                        try
+                        {
+                            logger.LogInformation($"Attempting to apply migrations (attempt {i + 1}/{maxRetries})...");
+                            context.Database.Migrate();
+                            logger.LogInformation("Database migrations applied successfully.");
+                            break; // Exit loop on success
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.LogError(ex, $"Error applying migrations. Retrying in {retryDelay.TotalSeconds} seconds...");
+                            if (i < maxRetries - 1)
+                            {
+                                Thread.Sleep(retryDelay); // Wait before retrying
+                            }
+                            else
+                            {
+                                logger.LogCritical("Failed to apply migrations after multiple retries. Application will not start.");
+                                throw; // Re-throw if all retries fail, stopping the app
+                            }
+                        }
+                    }
+
+                    // Optional: Seed initial data after migrations
+                    // SeedData.Initialize(services);
+
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "An error occurred during database migration or seeding.");
+                    // Depending on your environment, you might want to throw here to prevent the app from starting
+                    // if the database isn't ready. For production, this is often a good idea.
+                    throw;
+                }
+            }
+
         }
     }
 }
