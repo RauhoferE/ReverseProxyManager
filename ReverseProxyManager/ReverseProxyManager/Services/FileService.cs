@@ -125,5 +125,27 @@ server {{
 
             return certificates;
         }
+
+        public async Task RenameSSLCertificateAsync(string oldName, string newName)
+        {
+            var crtFile = Path.Combine(FolderHelper.GetSSlFolderPath(), $"{oldName}.crt");
+            var keyFile = Path.Combine(FolderHelper.GetSSlFolderPath(), $"{oldName}.key");
+
+            var newCrtFile = Path.Combine(FolderHelper.GetSSlFolderPath(), $"{newName}.crt");
+            var newKeyFile = Path.Combine(FolderHelper.GetSSlFolderPath(), $"{newName}.key");
+
+            if (!File.Exists(crtFile) || !File.Exists(keyFile))
+            {
+                throw new NotFoundException($"Error old certificate files for {oldName} not found.");
+            }
+
+            if (File.Exists(newCrtFile) || File.Exists(newKeyFile))
+            {
+                throw new AlreadyExistsException($"Error certificate file with name {newName} already exists.");
+            }
+
+            File.Move(crtFile, newCrtFile);
+            File.Move(keyFile, newKeyFile);
+        }
     }
 }

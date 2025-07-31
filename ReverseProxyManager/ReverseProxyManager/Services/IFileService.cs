@@ -13,6 +13,8 @@ namespace ReverseProxyManager.Services
 
         Task DeleteSSlCertificateAsync(string name);
 
+        Task RenameSSLCertificateAsync(string oldName, string newName);
+
         Task CreateNginxConfigAsync(List<ServerEntity> serverEntities);
     }
 }

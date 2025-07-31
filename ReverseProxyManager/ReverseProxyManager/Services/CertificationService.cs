@@ -221,38 +221,52 @@ namespace ReverseProxyManager.Services
                 throw new NotFoundException($"Certificate with id {id} not found.");
             }
 
+            // If the name is the same as the current name, do nothing
+            if (certificateWithSameName != null && certificateWithSameName.Id == certificate.Id)
+            {
+                return;
+            }
+
             if (certificateWithSameName != null)
             {
                 throw new AlreadyExistsException($"Certificate with name {name} already exists.");
             }
 
+            var oldName = certificate.Name;
+
             certificate.Name = name;
 
-            var certificateFiles = await this.fileService.GetSSlCertificateNamesAsync();
+            await this.fileService.RenameSSLCertificateAsync(oldName, name);
+
+            this._dbContext.SaveChanges();
 
             // If there is no file attached set t to inactive and remove all the data
-            var fileAttached = await this.fileService.CheckForValidFilesAsync(name);
-            if (!fileAttached)
-            {
-                certificate.FileAttached = false;
-                this.ResetCertificateEntity(certificate);
-                //certificate.LastUpdated = DateTime.Now;
-                //certificate.IsUpToDate = false;
-                //certificate.Issuer = null;
-                //certificate.Subject = null;
-                //certificate.ValidNotAfter = null;
-                //certificate.ValidNotBefore = null;
-            }
+            //var fileAttached = await this.fileService.CheckForValidFilesAsync(name);
+            //if (!fileAttached)
+            //{
+            //    certificate.FileAttached = false;
+            //    this.ResetCertificateEntity(certificate);
+            //    //certificate.LastUpdated = DateTime.Now;
+            //    //certificate.IsUpToDate = false;
+            //    //certificate.Issuer = null;
+            //    //certificate.Subject = null;
+            //    //certificate.ValidNotAfter = null;
+            //    //certificate.ValidNotBefore = null;
+            //}
 
-            if (!fileAttached && certificate.ServerEntity != null)
-            {
-                certificate.ServerEntity.Active = false;
-                certificate.ServerEntity.LastUpdated = DateTime.Now;
-                certificate.ServerEntity.IsUpToDate = false;
-                certificate.ServerEntity.RedirectsToHttps = false;
-            }
+            //if (certificate.ServerEntity != null)
+            //{
+            //    certificate.ServerEntity.Active = false;
+            //    certificate.ServerEntity.LastUpdated = DateTime.Now;
+            //    certificate.ServerEntity.IsUpToDate = false;
+            //    certificate.ServerEntity.RedirectsToHttps = false;
+            //}
 
-            await this.managementService.ApplyNewConfigAsync();
+            // Only update the config file if the certificate is in use
+            if (certificate.ServerEntity != null && certificate.ServerEntity.Active)
+            {
+                await this.managementService.ApplyNewConfigAsync();
+            }
         }
 
         private void ResetCertificateEntity(CertificateEntity certificateEntity)

@@ -134,7 +134,7 @@ namespace ReverseProxyManager.Services
 
             if (exisitingServer == null)
             {
-                throw new AlreadyExistsException($"Server with name {exisitingServer.Name} doesnt exists!");
+                throw new AlreadyExistsException($"Server with name {id} doesnt exists!");
             }
 
             CertificateEntity? certificate = null;
