@@ -5,6 +5,7 @@ import { Login } from './views/login/login';
 import { ServerManager } from './views/server-manager/server-manager';
 import { CertManager } from './views/cert-manager/cert-manager';
 import { Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth-guard';
 
 const routes: Routes = [
   // This is the default route that loads the HomeComponent
@@ -12,11 +13,13 @@ const routes: Routes = [
     children:[
       {
       path:'server',
-      component: ServerManager
+      component: ServerManager,
+      canActivate:[AuthGuard]
       },
       {
         path:'certs',
-        component: CertManager
+        component: CertManager,
+        canActivate:[AuthGuard]
       }
 
     ]
