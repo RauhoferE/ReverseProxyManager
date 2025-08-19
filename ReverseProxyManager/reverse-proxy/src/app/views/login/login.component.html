@@ -1,1 +1,42 @@
-<p>login works!</p>
+<div class="flex flex-col items-center mt-8 ">
+    <h1 class=" text-2xl font-bold">
+        Login
+    </h1>
+    <form class="" nz-form [formGroup]="loginForm" (ngSubmit)="submit()">
+      <nz-form-item>
+        <nz-form-label  nz-col nzSpan="24" nzFor="username" nzRequired>
+          Username
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="errorTpl">
+          <nz-input-group nzPrefixIcon="user">
+            <input  formControlName="username" nz-input placeholder="username" />
+          <ng-template #errorTpl let-control>
+            @if (control.errors?.['required']) {
+              Username is required!
+            }
+          </ng-template>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+                <nz-form-label nzFor="password" nz-col nzSpan="24" nzRequired>
+          Password
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="errorTpl2">
+          <nz-input-group nzPrefixIcon="lock">
+            <input nzRequired formControlName="password" nz-input type="password" placeholder="Password" />
+                      <ng-template #errorTpl2 let-control>
+            @if (control.errors?.['required']) {
+              Password is required!
+            }
+          </ng-template>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary" [disabled]="!loginForm.valid">Log in</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+</div>
