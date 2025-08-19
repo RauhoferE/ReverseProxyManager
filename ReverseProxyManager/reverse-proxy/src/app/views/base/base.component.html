@@ -3,7 +3,7 @@
         <ul nz-menu nzTheme="dark" nzMode="horizontal">
           <li nz-menu-item><a href="/servers">Servers</a></li>
           <li nz-menu-item><a href="/certificates">Certificates</a></li>
-          <li nz-menu-item><button nz-button nzType="primary">Recreate Config</button></li>
+          <li nz-menu-item><span (click)="recreateConfig()">Recreate Config</span></li>
         </ul>
   </nz-header>
   <nz-content>

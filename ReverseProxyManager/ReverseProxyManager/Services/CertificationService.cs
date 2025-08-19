@@ -166,6 +166,8 @@ namespace ReverseProxyManager.Services
                 // If the file exists skip
                 if (certificates.Select(x => x.Name).Contains(certificate.Name))
                 {
+                    certificate.FileAttached = true;
+                    this._dbContext.SaveChanges();
                     continue;
                 }
 

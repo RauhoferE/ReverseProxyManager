@@ -11,5 +11,8 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
   styleUrl: './base.component.scss'
 })
 export class BaseComponent {
+recreateConfig() {
+throw new Error('Method not implemented.');
+}
 
 }
