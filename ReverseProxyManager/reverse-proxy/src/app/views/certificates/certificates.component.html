@@ -1,67 +1,57 @@
 <div class="flex flex-col">
-    <button class="self-end" nz-button nzType="primary">Rescan SSL Certificates</button>
-        <nz-table #filterTable [nzData]="certificates" nzTableLayout="fixed">
-      <thead>
-        <tr>
-            <th
-            >
-              Id
-            </th>
-            <th
-              [nzSortOrder]="name_sortOrder"
-              [nzSortDirections]="sortDirections"
-            >
-              Name
-            </th>
-                        <th
-            >
-              Server
-            </th>
-                        <th
-              [nzSortOrder]="issuer_sortOrder"
-              [nzSortDirections]="sortDirections"
-            >
-              Issuer
-            </th>
-                        <th
-              [nzSortOrder]="validNotBefore_sortOrder"
-              [nzSortDirections]="sortDirections"
-            >
-              Valid Not Before
-            </th>
-                        <th
-              [nzSortOrder]="validNotAfter_sortOrder"
-              [nzSortDirections]="sortDirections"
-            >
-              Valid To
-            </th>
-                                    <th
-              [nzSortOrder]="lastUpdated_sortOrder"
-              [nzSortDirections]="sortDirections"
-            >
-              Last Updated
-            </th>
-                                    <th
-              [nzSortOrder]="fileAttached_sortOrder"
-              [nzSortDirections]="sortDirections"
-            >
-              FileAttached
-            </th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (data of filterTable.data; track data) {
-          <tr>
-            <td>{{ data.id }}</td>
-            <td>{{ data.name }}</td>
-            <td>{{ data.serverEntity != null ? data.serverEntity.name : '-' }}</td>
-            <td>{{ data.issuer }}</td>
-            <td>{{ data.validNotBefore }}</td>
-            <td>{{ data.validNotAfter }}</td>
-            <td>{{ data.lastUpdated }}</td>
-            <td>{{ data.isUpToDate }}</td>
-          </tr>
-        }
-      </tbody>
-    </nz-table>
+
+<button class="self-end" nz-button nzType="primary" (click)="rescanCertificates()">Rescan SSL Certificates</button>
+  <nz-table class="mt-4" #filterTable [nzData]="certificates" nzTableLayout="fixed" [nzLoading]="loading"
+    (nzQueryParams)="onQueryParamsChange($event)">
+    <thead>
+      <tr>
+        <th>
+          Id
+        </th>
+        <th nzColumnKey="name" [nzSortFn]="true">
+          Name
+        </th>
+        <th>
+          Server
+        </th>
+        <th nzColumnKey="issuer" [nzSortFn]="true">
+          Issuer
+        </th>
+        <th nzColumnKey="validNotBefore" [nzSortFn]="true">
+          Valid Not Before
+        </th>
+        <th nzColumnKey="validNotAfter" [nzSortFn]="true">
+          Valid Not After
+        </th>
+        <th nzColumnKey="dateUpdated" [nzSortFn]="true">
+          Last Updated
+        </th>
+        <th nzColumnKey="fileAttached" [nzSortFn]="true">
+          FileAttached
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (data of filterTable.data; track data) {
+      <tr>
+        <td>{{ data.id }}</td>
+        <td>{{ data.name }}</td>
+        <td>{{ data.serverEntity != null ? data.serverEntity.name : '-' }}</td>
+        <td>{{ data.issuer }}</td>
+        <td>{{ getDate(data.validNotBefore) }}</td>
+        <td>{{ getDate( data.validNotAfter) }}</td>
+        <td>{{ getDate( data.lastUpdated) }}</td>
+        <td>
+          <ng-container>
+            <span *ngIf="data.isUpToDate" nz-icon nzType="check" nzTheme="outline"></span>
+            <span *ngIf="!data.isUpToDate" nz-icon nzType="close" nzTheme="outline"></span>
+          </ng-container>
+
+
+        </td>
+      </tr>
+      }
+    </tbody>
+  </nz-table>
+  
 </div>
