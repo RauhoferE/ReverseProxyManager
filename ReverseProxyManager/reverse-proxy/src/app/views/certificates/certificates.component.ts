@@ -3,17 +3,16 @@ import { NzTableModule, NzTableQueryParams, NzTableSortOrder } from 'ng-zorro-an
 import { CertificateDto } from '../../models/certificateModels';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconDirective, NzIconModule, provideNzIcons } from 'ng-zorro-antd/icon';
-import { CheckOutline } from '@ant-design/icons-angular/icons';
 import { CommonModule } from '@angular/common';
 import dayjs from 'dayjs';
-import { NzFlexModule } from 'ng-zorro-antd/flex';
-import { NzSpaceModule } from 'ng-zorro-antd/space';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {bootstrapX, bootstrapCheckCircle, bootstrapBoxArrowDown  } from '@ng-icons/bootstrap-icons';
 
 @Component({
   selector: 'app-certificates',
   standalone: true,
-  imports: [NzTableModule, NzButtonModule, NzIconModule, CommonModule],
-  // providers:[provideNzIcons(CheckOutline)],
+  imports: [NzTableModule, NzButtonModule, NzIconModule, CommonModule, NgIcon],
+  providers:[provideIcons({bootstrapX, bootstrapCheckCircle, bootstrapBoxArrowDown })],
   templateUrl: './certificates.component.html',
   styleUrl: './certificates.component.scss'
 })

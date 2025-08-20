@@ -5,11 +5,18 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
 import { ServerDto } from '../../models/serverModels';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {bootstrapCloudCheck, bootstrapKey, bootstrapBodyText, bootstrapGear,
+  bootstrapGlobe, bootstrapShuffle
+  } from '@ng-icons/bootstrap-icons';
 
 @Component({
   selector: 'app-servers',
   standalone: true,
-  imports: [NzTableModule, NzButtonModule, NzIconModule, CommonModule],
+  imports: [NzTableModule, NzButtonModule, NzIconModule, CommonModule, NgIcon],
+  providers: [provideIcons({ bootstrapCloudCheck, bootstrapKey, bootstrapBodyText, bootstrapGear,
+    bootstrapGlobe, bootstrapShuffle
+   })],
   templateUrl: './servers.component.html',
   styleUrl: './servers.component.scss'
 })

@@ -1,10 +1,20 @@
 <nz-layout>
   <nz-header>
         <ul nz-menu nzTheme="dark" nzMode="horizontal">
-          <li nz-menu-item><a href="/servers">Servers</a></li>
-          <li nz-menu-item><a href="/certificates">Certificates</a></li>
-          <li nz-menu-item><a href="/help">Help</a></li>
-          <li nz-menu-item><span (click)="recreateConfig()">Recreate Config</span></li>
+          <li nz-menu-item><a href="/servers">
+            <ng-icon name="bootstrapHddRack"></ng-icon>
+            Servers
+          </a></li>
+          <li nz-menu-item><a href="/certificates">
+          <ng-icon name="bootstrapKey"></ng-icon>
+            Certificates
+          </a></li>
+          <li nz-menu-item><a href="/help">
+            <ng-icon name="bootstrapInfoCircle"></ng-icon>
+            Help</a></li>
+          <li nz-menu-item><span (click)="recreateConfig()">
+            <ng-icon name="bootstrapGear"></ng-icon>
+            Recreate Config</span></li>
         </ul>
   </nz-header>
   <nz-content>
