@@ -3,6 +3,7 @@ import { BaseComponent } from './views/base/base.component';
 import { LoginComponent } from './views/login/login.component';
 import { ServersComponent } from './views/servers/servers.component';
 import { CertificatesComponent } from './views/certificates/certificates.component';
+import { HelpComponent } from './views/help/help.component';
 
 export const routes: Routes = [
       { path: '', component: BaseComponent, children: [
@@ -11,6 +12,9 @@ export const routes: Routes = [
         },
         {
             path: 'certificates', component: CertificatesComponent
+        },
+                {
+            path: 'help', component: HelpComponent
         }
       ]},
       // This route navigates to the BaseComponent for the root URL

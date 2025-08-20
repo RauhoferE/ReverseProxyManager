@@ -1,1 +1,53 @@
-<p>servers works!</p>
+<div class="flex flex-col">
+
+<button class="self-end" nz-button nzType="primary" (click)="recreateConfig()">Recreate Config</button>
+  <nz-table class="mt-4" #filterTable [nzData]="servers" nzTableLayout="fixed" [nzLoading]="loading"
+    (nzQueryParams)="onQueryParamsChange($event)">
+    <thead>
+      <tr>
+        <th>
+          Id
+        </th>
+                <th nzColumnKey="name" [nzSortFn]="true">
+          Name
+        </th>
+        <th >
+          Url And Port
+        </th>
+        <th nzColumnKey="active" [nzSortFn]="true">
+            Active
+        </th>
+        <th>
+          Synced/UsesRawSettings
+        </th>
+        <th>
+            Http/Https/RedirectsToHttps
+        </th>
+        <th nzColumnKey="lastUpdated" [nzSortFn]="true">
+          Last Updated
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (data of filterTable.data; track data) {
+      <tr>
+        <td>{{ data.id }}</td>
+        <td>{{data.name}}</td>
+        <td>{{ data.target }}:{{data.targetPort}}</td>
+        <td>{{data.active}}</td>
+        <td><div>
+          <span *ngIf="data.isUpToDate" nz-icon nzType="check" nzTheme="outline"></span>
+          <span *ngIf="data.rawSettings" nz-icon nzType="check" nzTheme="outline" class="ml-2"></span>
+        </div></td>
+                <td><div>
+          <span *ngIf="data.usesHttp" nz-icon nzType="check" nzTheme="outline"></span>
+          <span *ngIf="data.certificate" nz-icon nzType="check" nzTheme="outline" class="ml-2"></span>
+          <span *ngIf="data.redirectsToHttps" nz-icon nzType="check" nzTheme="outline" class="ml-2"></span>
+        </div></td>
+        <td>{{ getDate( data.lastUpdated) }}</td>
+      </tr>
+      }
+    </tbody>
+  </nz-table>
+  
+</div>

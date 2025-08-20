@@ -12,7 +12,7 @@ import { NzSpaceModule } from 'ng-zorro-antd/space';
 @Component({
   selector: 'app-certificates',
   standalone: true,
-  imports: [NzTableModule, NzButtonModule, NzIconModule, CommonModule, NzFlexModule, NzSpaceModule],
+  imports: [NzTableModule, NzButtonModule, NzIconModule, CommonModule],
   // providers:[provideNzIcons(CheckOutline)],
   templateUrl: './certificates.component.html',
   styleUrl: './certificates.component.scss'
