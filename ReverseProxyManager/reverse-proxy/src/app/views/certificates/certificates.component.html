@@ -1,6 +1,6 @@
 <div class="flex flex-col">
 
-<button class="self-end" nz-button nzType="primary" (click)="rescanCertificates()">Rescan SSL Certificates</button>
+<button class="self-end mr-2 mt-4" nz-button nzType="primary" (click)="rescanCertificates()">Rescan SSL Certificates</button>
   <nz-table class="mt-4" #filterTable [nzData]="certificates" nzTableLayout="fixed" [nzLoading]="loading"
     (nzQueryParams)="onQueryParamsChange($event)">
     <thead>

@@ -1,6 +1,6 @@
 <div class="flex flex-col">
 
-<button class="self-end" nz-button nzType="primary" (click)="recreateConfig()">Recreate Config</button>
+<button class="self-end mr-2 mt-4" nz-button nzType="primary" (click)="recreateConfig()">Recreate Config</button>
   <nz-table class="mt-4" #filterTable [nzData]="servers" nzTableLayout="fixed" [nzLoading]="loading"
     (nzQueryParams)="onQueryParamsChange($event)">
     <thead>
@@ -36,11 +36,14 @@
         <td>{{ data.target }}:{{data.targetPort}}</td>
         <td>{{data.active}}</td>
         <td><div>
-          <span *ngIf="data.isUpToDate" nz-icon nzType="check" nzTheme="outline"></span>
-          <span *ngIf="data.rawSettings" nz-icon nzType="check" nzTheme="outline" class="ml-2"></span>
+          <span *ngIf="data.isUpToDate" nz-icon nzType="sync" nzTheme="twotone" nzTwotoneColor="green"></span>
+          <span *ngIf="!data.isUpToDate" nz-icon nzType="sync" nzTheme="twotone" nzTwotoneColor="red"></span>
+          <span *ngIf="data.rawSettings" nz-icon nzType="diff" nzTheme="twotone" nzTwotoneColor="green" class="ml-2"></span>
+          <span *ngIf="!data.rawSettings" nz-icon nzType="diff" nzTheme="twotone" nzTwotoneColor="red" class="ml-2"></span>
         </div></td>
                 <td><div>
-          <span *ngIf="data.usesHttp" nz-icon nzType="check" nzTheme="outline"></span>
+          <span *ngIf="data.usesHttp" nz-icon nzType="check" nzTheme="twotone" nzTwotoneColor="green"></span>
+          <span *ngIf="!data.usesHttp" nz-icon nzType="check" nzTheme="twotone" nzTwotoneColor="red"></span>
           <span *ngIf="data.certificate" nz-icon nzType="check" nzTheme="outline" class="ml-2"></span>
           <span *ngIf="data.redirectsToHttps" nz-icon nzType="check" nzTheme="outline" class="ml-2"></span>
         </div></td>
