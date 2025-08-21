@@ -1,7 +1,32 @@
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Edit Certificate" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
-    <ng-container *nzModalContent>
-    <p>Content one</p>
-    <p>Content two</p>
-    <p>Content three</p>
-    </ng-container>
-</nz-modal>
+<div>
+        <form nz-form [formGroup]="certForm" (ngSubmit)="submit()">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6">Certificate name</nz-form-label>
+        <nz-form-control [nzSpan]="12" [nzErrorTip]="errorTpl2">
+          <nz-input-group [nzPrefix]="prefiKeyIcon">
+          <input formControlName="name" nz-input placeholder="certificate name" />
+                                <ng-template #errorTpl2 let-control>
+            @if (control.errors?.['required']) {
+              A certificate name is required!
+            }
+          </ng-template>
+          <ng-template #prefiKeyIcon>
+            <ng-icon name="bootstrapKey"></ng-icon>
+          </ng-template>
+          </nz-input-group>
+
+        </nz-form-control>
+      </nz-form-item>
+            <nz-form-item>
+        <!-- <nz-form-control>
+            <button nz-button nzType="primary" type="button" (click)="handleCancel()">Cancel</button>
+          <button nz-button nzType="primary" [disabled]="!certForm.valid">Change</button>
+        </nz-form-control> -->
+      </nz-form-item>
+        </form>
+<hr>
+          <div>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" [disabled]="!certForm.valid" (click)="submit()" >Change</button>
+      </div>
+</div>

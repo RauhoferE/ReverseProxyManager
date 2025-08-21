@@ -35,7 +35,7 @@
     </thead>
     <tbody>
       @for (data of filterTable.data; track data) {
-      <tr>
+      <tr (click)="openEditCertModal(data.id, data.name)">
         <td>{{ data.id }}</td>
         <td>{{ data.name }}</td>
         <td>{{ data.serverEntity != null ? data.serverEntity.name : '-' }}</td>
@@ -55,5 +55,10 @@
       }
     </tbody>
   </nz-table>
+  <!-- <app-cert-edit
+  *ngIf="certNameToEdit != ''"
+  [certName]="certNameToEdit"
+  (certNameChanged)="updateCertName($event)"
+  ></app-cert-edit> -->
   
 </div>
