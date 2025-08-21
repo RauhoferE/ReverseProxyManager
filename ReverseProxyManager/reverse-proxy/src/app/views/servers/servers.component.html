@@ -1,9 +1,16 @@
 <div class="flex flex-col">
-
+  <div class="flex flex-row">
+<button class="self-start ml-2 mr-2 mt-4" nz-button nzType="primary" (click)="openAddServerModal()">
+<ng-icon name="bootstrapHddRack"></ng-icon>
+  Add new server
+</button>
 <button class="self-end mr-2 mt-4" nz-button nzType="primary" (click)="recreateConfig()">
 <ng-icon name="bootstrapGear"></ng-icon>
   Recreate Config
 </button>
+  </div>
+
+
   <nz-table class="mt-4" #filterTable [nzData]="servers" nzTableLayout="fixed" [nzLoading]="loading"
     (nzQueryParams)="onQueryParamsChange($event)">
     <thead>
