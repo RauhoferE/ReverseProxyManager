@@ -27,35 +27,43 @@ namespace ReverseProxyManager.Requests
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (string.IsNullOrEmpty(Name) || Name.Length < 1 || Name.Length > 100)
+
+            if (string.IsNullOrEmpty(RawSettings) && (string.IsNullOrEmpty(Name) || Name.Length < 1 || Name.Length > 100))
             {
                 yield return new ValidationResult(
                     $"",
                     new[] { nameof(Name) });
             }
 
-            if (string.IsNullOrEmpty(Target) || Target.Length < 1 || Target.Length > 250 || !IsValidHttpAddress(Target))
+            if (string.IsNullOrEmpty(RawSettings) && (string.IsNullOrEmpty(Target) || Target.Length < 1 || Target.Length > 250 || !IsValidHttpAddress(Target)))
             {
                 yield return new ValidationResult(
                     $"",
                     new[] { nameof(Target) });
             }
 
-            if (RedirectsToHttps && CertificateId < 0)
+            if (string.IsNullOrEmpty(RawSettings) && RedirectsToHttps && CertificateId < 0)
             {
                 yield return new ValidationResult(
                     $"When redirecting to https you need to assign a certificate.",
-                    new[] { nameof(RedirectsToHttps) });
+                    new[] { nameof(CertificateId) });
             }
 
-            if (RedirectsToHttps && UsesHttp)
+            if (string.IsNullOrEmpty(RawSettings) && RedirectsToHttps && UsesHttp)
             {
                 yield return new ValidationResult(
                     $"If you redirect to HTTPS, you cannot use HTTP at the same time.",
                     new[] { nameof(RedirectsToHttps) });
             }
 
-            if (TargetPort < 0 || TargetPort > 65536)
+            if (string.IsNullOrEmpty(RawSettings) && CertificateId < 0 && !UsesHttp)
+            {
+                yield return new ValidationResult(
+                    $"You need to use either http or https",
+                    new[] { nameof(UsesHttp) });
+            }
+
+            if (string.IsNullOrEmpty(RawSettings) && (TargetPort < 0 || TargetPort > 65536))
             {
                 yield return new ValidationResult(
                     $"",

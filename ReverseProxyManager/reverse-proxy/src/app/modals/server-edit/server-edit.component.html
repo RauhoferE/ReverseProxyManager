@@ -28,7 +28,7 @@
         <nz-form-label [nzSpan]="6">Ip Address/URL</nz-form-label>
         <nz-form-control [nzSpan]="12" [nzErrorTip]="errorTpl">
           <nz-input-group [nzPrefix]="prefixWifiIcon">
-          <input formControlName="target" nz-input placeholder="coolurl" />
+          <input formControlName="target" nz-input placeholder="http://coolurl" />
                                 <ng-template #errorTpl let-control>
             @if (control.errors?.['required']) {
               An URL is required!
@@ -91,13 +91,23 @@
 
                                     <nz-form-item>
         <nz-form-label [nzSpan]="6">SSL Certificate</nz-form-label>
-        <nz-form-control [nzSpan]="12" [nzErrorTip]="errorTpl">
+        <nz-form-control [nzSpan]="12">
           <nz-input-group>
             <nz-select formControlName="certificateId">
                     @for (option of activeCerts; track option) {
                     <nz-option [nzValue]="option.id" [nzLabel]="option.name"></nz-option>
                     }
               </nz-select>
+          </nz-input-group>
+
+        </nz-form-control>
+      </nz-form-item>
+
+                                    <nz-form-item>
+        <nz-form-label [nzSpan]="6">Redirects to HTTPS</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <nz-input-group>
+          <input type="checkbox" formControlName="redirectsToHttps" nz-input />
           </nz-input-group>
 
         </nz-form-control>
@@ -116,6 +126,15 @@
 
         </nz-form-control>
       </nz-form-item>
+      <div *ngIf="serverForm.errors && serverForm.errors!['invalidRedirect']" >
+        <p class="text-danger">Redirects to HTTPS is enabled but no SSL Certificate is selected!</p>
+      </div>
+      <div *ngIf="serverForm.errors && serverForm.errors!['usesHttpOrHttpsError']" >
+        <p class="text-danger">The server needs to use either http or https!</p>
+      </div>
+        <div *ngIf="serverForm.errors && serverForm.errors!['invalidCert']" >
+        <p class="text-danger">The server needs to use a valid SSL Certificate if it uses https!</p>
+        </div>
         </form>
 <hr>
           <div>

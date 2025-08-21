@@ -8,12 +8,14 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NZ_MODAL_DATA, NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
 import { IdNameDto } from '../../models/certificateModels';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { httpsCertificateValidator, rawSettingsNumberValidator, rawSettingsStringValidator, redirectsToHttpsValidator, usesHttpOrHttpsValidator } from '../../validators/form-validators';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-server-edit',
   standalone: true,
-  imports: [NzModalModule, FormsModule, NzFormModule, NzInputModule, ReactiveFormsModule, NzButtonModule, 
-      NgIcon, NzSelectModule],
+  imports: [NzModalModule, FormsModule, NzFormModule, NzInputModule, ReactiveFormsModule, NzButtonModule,
+    NgIcon, NzSelectModule, NgIf],
   providers:[provideIcons({bootstrapHddRack, bootstrapWifi,
     bootstrapGear
    })],
@@ -36,23 +38,33 @@ constructor(private fb: FormBuilder, private modal: NzModalRef, @Inject(NZ_MODAL
   this.submitButton = data['submitName'] || 'Change';
       this.serverForm = this.fb.group({
         name: [data['name'] || '', [
-          Validators.required,Validators.maxLength(100),
-          Validators.minLength(1)
+          rawSettingsStringValidator(1, 100),
+          // Validators.required,Validators.maxLength(100),
+          // Validators.minLength(1)
         ]],
-        active: [data['active']],
+        active: [data['active'] || false],
         target: [data['target']|| '', [
-          Validators.required,,Validators.maxLength(250),
-          Validators.minLength(1)
+          rawSettingsStringValidator(1, 250),
+          // Validators.required,,Validators.maxLength(250),
+          // Validators.minLength(1)
         ]],
         port: [data['port']|| '', [
-          Validators.required,,Validators.max(65536),
-          Validators.min(0)
+          rawSettingsNumberValidator(0, 65536),
+          // Validators.required,,Validators.max(65536),
+          // Validators.min(0)
         ]],
-        usesHttp: [data['usesHttp']],
-        redirectsToHttps: [data['redirectsToHttps']],
+        usesHttp: [data['usesHttp']|| false],
+        redirectsToHttps: [data['redirectsToHttps']|| false],
         rawSettings: [data['rawSettings']|| ''],
-        certificateId: [data['certificateId']],
-      });
+        certificateId: [data['certificateId'] || -1]
+      },
+    {
+      validators: [
+        redirectsToHttpsValidator(),
+        usesHttpOrHttpsValidator(),
+        httpsCertificateValidator()
+      ]
+    });
   
 }
 
@@ -65,6 +77,11 @@ handleCancel() {
 }
 
 submit() {
+  this.serverForm.updateValueAndValidity();
+  if (this.serverForm.invalid) {
+    return;
+  }
+
   this.modal.destroy(this.serverForm.value);
 }
 
