@@ -38,18 +38,18 @@ constructor(private fb: FormBuilder, private modal: NzModalRef, @Inject(NZ_MODAL
   this.submitButton = data['submitName'] || 'Change';
       this.serverForm = this.fb.group({
         name: [data['name'] || '', [
-          rawSettingsStringValidator(1, 100),
+          
           // Validators.required,Validators.maxLength(100),
           // Validators.minLength(1)
         ]],
         active: [data['active'] || false],
         target: [data['target']|| '', [
-          rawSettingsStringValidator(1, 250),
+          //rawSettingsStringValidator(1, 250),
           // Validators.required,,Validators.maxLength(250),
           // Validators.minLength(1)
         ]],
         port: [data['port']|| '', [
-          rawSettingsNumberValidator(0, 65536),
+          //rawSettingsNumberValidator(0, 65536),
           // Validators.required,,Validators.max(65536),
           // Validators.min(0)
         ]],
@@ -62,7 +62,10 @@ constructor(private fb: FormBuilder, private modal: NzModalRef, @Inject(NZ_MODAL
       validators: [
         redirectsToHttpsValidator(),
         usesHttpOrHttpsValidator(),
-        httpsCertificateValidator()
+        httpsCertificateValidator(),
+        rawSettingsStringValidator(1, 100, 'name'),
+        rawSettingsStringValidator(1, 250, 'target'),
+        rawSettingsNumberValidator(0, 65536, 'port')
       ]
     });
   
@@ -73,6 +76,12 @@ constructor(private fb: FormBuilder, private modal: NzModalRef, @Inject(NZ_MODAL
   }
 
 handleCancel() {
+    for (const name in this.serverForm.controls) {
+      if (this.serverForm.controls[name].invalid) {
+        console.log(this.serverForm.controls[name])
+      }
+    
+  }
   this.modal.destroy(null);
 }
 

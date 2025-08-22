@@ -6,10 +6,11 @@ export function redirectsToHttpsValidator(): ValidatorFn{
 
         var redirectsToHttpsControl = control.get('redirectsToHttps');
         var usesHttpControl = control.get('usesHttp');
+        var rawSettingsControl = control.get('rawSettings');
 
         console.log(redirectsToHttpsControl?.value)
 
-        if (redirectsToHttpsControl?.value == true && usesHttpControl?.value == true) {
+        if (!rawSettingsControl?.value && redirectsToHttpsControl?.value == true && usesHttpControl?.value == true) {
             // Invalid redirect
             console.log("invalid redirect")
             return { invalidRedirect: true };
@@ -25,8 +26,9 @@ export function usesHttpOrHttpsValidator(): ValidatorFn{
 
         var certificateIdControl = control.get('certificateId');
         var usesHttpControl = control.get('usesHttp');
+        var rawSettingsControl = control.get('rawSettings');
 
-        if (usesHttpControl?.value == false && certificateIdControl?.value == -1) {
+        if (!rawSettingsControl?.value && usesHttpControl?.value == false && certificateIdControl?.value == -1) {
             // Invalid redirect
             console.log("invalid usesHttp")
             return { usesHttpOrHttpsError: true };
@@ -42,8 +44,9 @@ export function httpsCertificateValidator(): ValidatorFn{
 
         var certificateIdControl = control.get('certificateId');
         var redirectsToHttpsControl = control.get('redirectsToHttps');
+        var rawSettingsControl = control.get('rawSettings');
 
-        if (redirectsToHttpsControl?.value == true && certificateIdControl?.value == -1) {
+        if (!rawSettingsControl?.value && redirectsToHttpsControl?.value == true && certificateIdControl?.value == -1) {
             // Invalid redirect
             console.log("invalid certificate")
             return { invalidCert: true };
@@ -53,9 +56,9 @@ export function httpsCertificateValidator(): ValidatorFn{
     };
 }
 
-export function rawSettingsStringValidator(minLength: number, maxLength: number): ValidatorFn {
+export function rawSettingsStringValidator(minLength: number, maxLength: number, controlname: string): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-        const value = control.value;
+        const value = control.root.get(controlname)?.value;
         const rawSettingsControl = control.root.get('rawSettings');
 
         if (!value && !rawSettingsControl?.value) {
@@ -79,9 +82,9 @@ export function rawSettingsStringValidator(minLength: number, maxLength: number)
     };
 }
 
-export function rawSettingsNumberValidator(min: number, max: number): ValidatorFn {
+export function rawSettingsNumberValidator(min: number, max: number, controlname: string): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-        const value = control.value;
+        const value = control.root.get(controlname)?.value;
         const rawSettingsControl = control.root.get('rawSettings');
 
         if (!value && !rawSettingsControl?.value) {
