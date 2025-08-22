@@ -76,12 +76,6 @@ constructor(private fb: FormBuilder, private modal: NzModalRef, @Inject(NZ_MODAL
   }
 
 handleCancel() {
-    for (const name in this.serverForm.controls) {
-      if (this.serverForm.controls[name].invalid) {
-        console.log(this.serverForm.controls[name])
-      }
-    
-  }
   this.modal.destroy(null);
 }
 

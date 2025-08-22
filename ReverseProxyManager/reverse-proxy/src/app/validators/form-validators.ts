@@ -12,7 +12,6 @@ export function redirectsToHttpsValidator(): ValidatorFn{
 
         if (!rawSettingsControl?.value && redirectsToHttpsControl?.value == true && usesHttpControl?.value == true) {
             // Invalid redirect
-            console.log("invalid redirect")
             return { invalidRedirect: true };
         }
 
@@ -30,7 +29,6 @@ export function usesHttpOrHttpsValidator(): ValidatorFn{
 
         if (!rawSettingsControl?.value && usesHttpControl?.value == false && certificateIdControl?.value == -1) {
             // Invalid redirect
-            console.log("invalid usesHttp")
             return { usesHttpOrHttpsError: true };
         }
 
@@ -48,7 +46,6 @@ export function httpsCertificateValidator(): ValidatorFn{
 
         if (!rawSettingsControl?.value && redirectsToHttpsControl?.value == true && certificateIdControl?.value == -1) {
             // Invalid redirect
-            console.log("invalid certificate")
             return { invalidCert: true };
         }
 
