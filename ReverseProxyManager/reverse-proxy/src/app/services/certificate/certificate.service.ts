@@ -28,7 +28,7 @@ export class CertificateService {
       filterString = '';
     }
 
-    return this.http.get<CertificateDto[]>(`${environment.appUrl}/api/v1/certificate?${filterString}&sort=${sortAfter}&asc=${asc}`, {withCredentials: true});
+    return this.http.get<CertificateDto[]>(`${environment.appUrl}/api/v1/certificate?${filterString}&sortAfter=${sortAfter}&asc=${asc}`, {withCredentials: true});
   }
 
   public getActiveCertificates(){

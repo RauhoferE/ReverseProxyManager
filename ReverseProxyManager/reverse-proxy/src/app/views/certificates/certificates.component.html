@@ -16,8 +16,8 @@
         <th>
           Server
         </th>
-        <th nzColumnKey="issuer" [nzSortFn]="true">
-          Issuer
+        <th nzColumnKey="fileAttached" [nzSortFn]="true">
+          FileAttached
         </th>
         <th nzColumnKey="validNotBefore" [nzSortFn]="true">
           Valid Not Before
@@ -28,29 +28,29 @@
         <th nzColumnKey="dateUpdated" [nzSortFn]="true">
           Last Updated
         </th>
-        <th nzColumnKey="fileAttached" [nzSortFn]="true">
-          FileAttached
-        </th>
+
       </tr>
     </thead>
     <tbody>
       @for (data of filterTable.data; track data) {
-      <tr (click)="openEditCertModal(data.id, data.name)">
+      <tr >
         <td>{{ data.id }}</td>
-        <td>{{ data.name }}</td>
+        <td class="interact-table-col" (click)="openEditCertModal(data.id, data.name)">{{ data.name }} <ng-icon name="bootstrapPencilSquare" color="#1890ff"></ng-icon></td>
+                <td>
+          <ng-container>
+            <ng-icon *ngIf="data.isUpToDate" name="bootstrapCheckCircle" color="green"></ng-icon>
+            <ng-icon *ngIf="!data.isUpToDate" name="bootstrapX" color="red"></ng-icon>
+          </ng-container>
+        </td>
         <td>{{ data.serverEntity != null ? data.serverEntity.name : '-' }}</td>
         <td>{{ data.issuer }}</td>
         <td>{{ getDate(data.validNotBefore) }}</td>
         <td>{{ getDate( data.validNotAfter) }}</td>
         <td>{{ getDate( data.lastUpdated) }}</td>
         <td>
-          <ng-container>
-            <ng-icon *ngIf="data.isUpToDate" name="bootstrapCheckCircle" color="green"></ng-icon>
-            <ng-icon *ngIf="!data.isUpToDate" name="bootstrapX" color="red"></ng-icon>
-          </ng-container>
-
-
+          <button nz-button nzType="default" (click)="deleteCertificate(data.id)"><ng-icon name="bootstrapTrash" color="red"></ng-icon></button>
         </td>
+
       </tr>
       }
     </tbody>

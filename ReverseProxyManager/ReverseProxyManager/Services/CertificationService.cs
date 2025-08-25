@@ -76,6 +76,7 @@ namespace ReverseProxyManager.Services
                 existingCertificate.ServerEntity.LastUpdated = DateTime.Now;
                 existingCertificate.ServerEntity.Active = false;
                 existingCertificate.ServerEntity.RedirectsToHttps = false;
+                existingCertificate.ServerEntity.UsesHttp = true;
                 recreateConfig = true;
             }
 

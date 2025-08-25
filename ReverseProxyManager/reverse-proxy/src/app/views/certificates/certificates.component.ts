@@ -6,7 +6,7 @@ import { NzIconDirective, NzIconModule, provideNzIcons } from 'ng-zorro-antd/ico
 import { CommonModule } from '@angular/common';
 import dayjs from 'dayjs';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import {bootstrapX, bootstrapCheckCircle, bootstrapBoxArrowDown  } from '@ng-icons/bootstrap-icons';
+import {bootstrapX, bootstrapCheckCircle, bootstrapBoxArrowDown, bootstrapPencilSquare, bootstrapTrash  } from '@ng-icons/bootstrap-icons';
 import { CertEditComponent } from "../../modals/cert-edit/cert-edit.component";
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { CertificateService } from '../../services/certificate/certificate.service';
@@ -18,11 +18,12 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   selector: 'app-certificates',
   standalone: true,
   imports: [NzTableModule, NzButtonModule, NzIconModule, CommonModule, NgIcon, CertEditComponent, NzModalModule],
-  providers:[provideIcons({bootstrapX, bootstrapCheckCircle, bootstrapBoxArrowDown })],
+  providers:[provideIcons({bootstrapX, bootstrapCheckCircle, bootstrapBoxArrowDown, bootstrapPencilSquare, bootstrapTrash })],
   templateUrl: './certificates.component.html',
   styleUrl: './certificates.component.scss'
 })
 export class CertificatesComponent implements OnInit, OnDestroy {
+
 
   certificates: CertificateDto[] = [];
   isLoading: boolean = false;
@@ -50,8 +51,6 @@ export class CertificatesComponent implements OnInit, OnDestroy {
         this.isLoading = loading;
       }
     });
-
-    await this.getAllCertificates(this.filterInput, 'name', true);
   }
 
   ngOnDestroy(): void {
@@ -64,10 +63,15 @@ export class CertificatesComponent implements OnInit, OnDestroy {
     const currentSort = sort.find(item => item.value !== null);
     const sortField = (currentSort && currentSort.key) || null;
     const sortOrder = (currentSort && currentSort.value) || null;
-    await this.getAllCertificates(this.filterInput, sortField || '', sortOrder == null ? true : sortOrder == 'ascend');
+    await this.getAllCertificates(this.filterInput, sortField || 'name', sortOrder == null ? true : sortOrder == 'ascend');
+}
+
+async deleteCertificate(id: number) {
+  //this.message.
 }
 
 async getAllCertificates(filter: string, sortAfter: string, asc: boolean) {
+  console.log(`Fetching certificates with filter: ${filter}, sortAfter: ${sortAfter}, asc: ${asc}`);
     this.rxjsService.setLoading(true);
    this.certificateService.getAllCertificates(filter, sortAfter, asc).subscribe({
     next: (res) => {
@@ -130,7 +134,7 @@ async getAllCertificates(filter: string, sortAfter: string, asc: boolean) {
   }
 
   getDate(arg0: Date) {
-    dayjs(arg0).format('YYYY-MM-DD HH:mm:ss');
+    return dayjs(arg0).format('YYYY-MM-DD HH:mm:ss');
 }
 
 }
