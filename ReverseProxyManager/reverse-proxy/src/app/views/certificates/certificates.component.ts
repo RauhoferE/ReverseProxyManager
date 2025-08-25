@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NzTableModule, NzTableQueryParams, NzTableSortOrder } from 'ng-zorro-antd/table';
 import { CertificateDto } from '../../models/certificateModels';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -9,6 +9,10 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import {bootstrapX, bootstrapCheckCircle, bootstrapBoxArrowDown  } from '@ng-icons/bootstrap-icons';
 import { CertEditComponent } from "../../modals/cert-edit/cert-edit.component";
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { CertificateService } from '../../services/certificate/certificate.service';
+import { RxjsService } from '../../services/rjxs/rxjs.service';
+import { Subject, takeUntil } from 'rxjs';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-certificates',
@@ -18,28 +22,83 @@ import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
   templateUrl: './certificates.component.html',
   styleUrl: './certificates.component.scss'
 })
-export class CertificatesComponent {
+export class CertificatesComponent implements OnInit, OnDestroy {
 
   certificates: CertificateDto[] = [];
-  loading: boolean = false;
+  isLoading: boolean = false;
+  destroy$: Subject<void> = new Subject<void>();
+  filterInput: string = '';
 
   /**
    *
    */
-  constructor(private modalService: NzModalService) {
+  constructor(private modalService: NzModalService, private certificateService: CertificateService,
+    private rxjsService: RxjsService, private message: NzMessageService
+  ) {
+    
     
     
   }
 
-  onQueryParamsChange($event: NzTableQueryParams) {
+  async ngOnInit(): Promise<void> {
+    this.rxjsService.isLoading$
+          .pipe(
+        // Complete the stream when the destroy$ subject emits
+        takeUntil(this.destroy$) 
+      ).subscribe({
+      next: (loading) => {
+        this.isLoading = loading;
+      }
+    });
+
+    await this.getAllCertificates(this.filterInput, 'name', true);
+  }
+
+  ngOnDestroy(): void {
+        this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  async onQueryParamsChange($event: NzTableQueryParams) {
     const { pageSize, pageIndex, sort, filter } = $event;
     const currentSort = sort.find(item => item.value !== null);
     const sortField = (currentSort && currentSort.key) || null;
     const sortOrder = (currentSort && currentSort.value) || null;
+    await this.getAllCertificates(this.filterInput, sortField || '', sortOrder == null ? true : sortOrder == 'ascend');
+}
+
+async getAllCertificates(filter: string, sortAfter: string, asc: boolean) {
+    this.rxjsService.setLoading(true);
+   this.certificateService.getAllCertificates(filter, sortAfter, asc).subscribe({
+    next: (res) => {
+      this.rxjsService.setLoading(false);
+      this.certificates = res;
+      console.log('Certificates loaded successfully', res);
+    },
+    error: (err) => {
+      this.rxjsService.setLoading(false);
+      this.message.error(err.error?.message || 'Failed to load certificates');
+      console.error('Failed to load certificates', err.error?.message || err);
+    }});
 }
 
   rescanCertificates() {
-   throw new Error("Method not implemented.");  
+    this.rxjsService.setLoading(true);
+   this.certificateService.rescanCertificates().subscribe({
+    next: async (res) => {
+      this.rxjsService.setLoading(false);
+      this.message.success('Certificates rescanned successfully');
+      await this.getAllCertificates(this.filterInput, 'name', true);
+      // this.loading = false;
+      // this.certificates = res;
+      console.log('Certificates rescanned successfully', res);
+    },
+    error: (err) => {
+      this.rxjsService.setLoading(false);
+      this.message.error(err.error?.message || 'Failed to rescan certificates');
+      //this.loading = false;
+      console.error('Failed to rescan certificates', err.error?.message || err);
+    }});
 
   }
 
@@ -50,13 +109,24 @@ export class CertificatesComponent {
     nzData: { certName: certName },
     nzFooter: null,});
 
-    modalRef.afterClose.subscribe((result: string) => {
-      console.log("Modal closed with result: ", result);
+    modalRef.afterClose.subscribe(async (result: string) => {
+      if (result) {
+        await this.updateCertName(id, result);
+      }
     });
   }
 
-  updateCertName($event: string) {
-    console.log("Certificate name updated to: ", $event);
+  updateCertName(id: number, $event: string) {
+    this.certificateService.updateCertificateName(id, $event).subscribe({
+      next: async (res) => {
+        this.message.success('Certificate name updated successfully');
+        await this.getAllCertificates(this.filterInput, 'name', true);
+        console.log('Certificate name updated successfully', res);
+      },
+      error: (err) => {
+        this.message.error(err.error?.message || 'Failed to update certificate name');
+        console.error('Failed to update certificate name', err.error?.message || err);
+      }});
   }
 
   getDate(arg0: Date) {

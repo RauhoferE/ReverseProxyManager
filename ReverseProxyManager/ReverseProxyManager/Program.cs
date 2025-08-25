@@ -68,6 +68,7 @@ namespace ReverseProxyManager
                                       .AllowCredentials());
             });
 
+
             // Db
             var dbConnection = FolderHelper.GetSqliteFilePath();
             builder.Services.AddDbContext<ReverseProxyDbContext>(options =>
@@ -115,6 +116,7 @@ namespace ReverseProxyManager
             //  Ensure Db Created and migrations applied
             CreateDbAndApplyMigration(app);
 
+            app.UseCors("ReverseProxyPolicy");
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {

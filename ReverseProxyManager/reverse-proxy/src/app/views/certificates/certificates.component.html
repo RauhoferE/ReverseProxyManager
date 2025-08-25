@@ -3,7 +3,7 @@
 <button class="self-end mr-2 mt-4" nz-button nzType="primary" (click)="rescanCertificates()">
   <ng-icon name="bootstrapBoxArrowDown"></ng-icon>
   Rescan SSL Certificates</button>
-  <nz-table class="mt-4" #filterTable [nzData]="certificates" nzTableLayout="fixed" [nzLoading]="loading"
+  <nz-table class="mt-4" #filterTable [nzData]="certificates" nzTableLayout="fixed" [nzLoading]="isLoading"
     (nzQueryParams)="onQueryParamsChange($event)">
     <thead>
       <tr>
