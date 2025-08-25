@@ -22,6 +22,8 @@ namespace ReverseProxyManager
 
             var builder = WebApplication.CreateBuilder(args);
 
+            var environment = builder.Environment.EnvironmentName;
+
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -93,6 +95,12 @@ namespace ReverseProxyManager
                             return Task.CompletedTask;
                         }
                     };
+                    options.Cookie.HttpOnly = true;
+                    if (environment == "Development")
+                    {
+                        options.Cookie.SameSite = SameSiteMode.None;
+                    }
+                    
                 });
 
             // Authorization

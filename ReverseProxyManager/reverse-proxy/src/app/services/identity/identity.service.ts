@@ -12,7 +12,7 @@ export class IdentityService {
 
   public login(username: string, password: string) {
     const loginData = { name: username, password: password };
-    return this.http.post<void>(`${environment.appUrl}/api/v1/identity/login`, loginData);
+    return this.http.post<void>(`${environment.appUrl}/api/v1/identity/login`, loginData, {withCredentials: true});
 
   }
 
