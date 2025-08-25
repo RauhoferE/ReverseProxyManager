@@ -418,3 +418,4 @@ FodyWeavers.xsd
 *.msp
 /ReverseProxyManager/ReverseProxyManager/appsettings.Development.json
 .vscode
+/ReverseProxyManager/reverse-proxy/ssl
