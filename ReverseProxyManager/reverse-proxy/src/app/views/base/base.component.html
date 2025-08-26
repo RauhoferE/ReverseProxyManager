@@ -1,0 +1,38 @@
+<div>
+  <nz-spin nzSimple [nzSpinning]="isLoading" class="absolute left-1/2 top-1/2 z-50"></nz-spin>
+  <div *ngIf="isLoading" class="w-full h-full absolute z-40">
+  </div>
+  <nz-layout [class.opacity-20]="isLoading"
+  [class.overflow-hidden]="isLoading">
+  <nz-header>
+        <ul nz-menu nzTheme="dark" nzMode="horizontal">
+          <li nz-menu-item><a href="/servers">
+            <ng-icon name="bootstrapHddRack"></ng-icon>
+            Servers
+          </a></li>
+          <li nz-menu-item><a href="/certificates">
+          <ng-icon name="bootstrapKey"></ng-icon>
+            Certificates
+          </a></li>
+          <li nz-menu-item><a href="/help">
+            <ng-icon name="bootstrapInfoCircle"></ng-icon>
+            Help</a></li>
+          <li nz-menu-item><span (click)="recreateConfig()">
+            <ng-icon name="bootstrapGear"></ng-icon>
+            Recreate Config</span></li>
+            <li nz-menu-item><span (click)="logout()">
+              Logout</span></li>
+        </ul>
+  </nz-header>
+  <nz-content>
+    <router-outlet></router-outlet>
+  </nz-content>
+  <nz-footer>
+    Reverse Proxy Manager - Created by RauhoferE
+  </nz-footer>
+
+  
+</nz-layout>
+</div>
+
+

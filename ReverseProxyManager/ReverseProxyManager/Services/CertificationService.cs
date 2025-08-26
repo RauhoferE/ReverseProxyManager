@@ -76,6 +76,7 @@ namespace ReverseProxyManager.Services
                 existingCertificate.ServerEntity.LastUpdated = DateTime.Now;
                 existingCertificate.ServerEntity.Active = false;
                 existingCertificate.ServerEntity.RedirectsToHttps = false;
+                existingCertificate.ServerEntity.UsesHttp = true;
                 recreateConfig = true;
             }
 
@@ -166,6 +167,8 @@ namespace ReverseProxyManager.Services
                 // If the file exists skip
                 if (certificates.Select(x => x.Name).Contains(certificate.Name))
                 {
+                    certificate.FileAttached = true;
+                    this._dbContext.SaveChanges();
                     continue;
                 }
 

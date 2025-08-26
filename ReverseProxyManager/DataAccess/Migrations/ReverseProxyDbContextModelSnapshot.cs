@@ -87,11 +87,10 @@ namespace DataAccess.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Target")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
-                    b.Property<long>("TargetPort")
+                    b.Property<long?>("TargetPort")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("UsesHttp")

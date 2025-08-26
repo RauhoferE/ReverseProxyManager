@@ -29,8 +29,7 @@ namespace DataAccess
                 entity.HasKey(e => e.Id);
                 entity.Property(se => se.Id).ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-                entity.Property(e => e.Target).IsRequired().HasMaxLength(250);
-                entity.Property(e => e.TargetPort).IsRequired();
+                entity.Property(e => e.Target).HasMaxLength(250);
             });
 
             modelBuilder.Entity<CertificateEntity>(entity =>

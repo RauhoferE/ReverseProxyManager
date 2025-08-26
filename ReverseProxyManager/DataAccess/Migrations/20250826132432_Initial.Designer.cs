@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ReverseProxyDbContext))]
-    [Migration("20250722115238_Initial")]
+    [Migration("20250826132432_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -90,11 +90,10 @@ namespace DataAccess.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Target")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
-                    b.Property<long>("TargetPort")
+                    b.Property<long?>("TargetPort")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("UsesHttp")

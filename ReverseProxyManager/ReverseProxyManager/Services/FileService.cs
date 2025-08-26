@@ -28,7 +28,7 @@ namespace ReverseProxyManager.Services
             foreach (var server in serverEntities)
             {
                 // If the user added his own settings write only them into the config
-                if (server.RawSettings != null)
+                if (!string.IsNullOrEmpty(server.RawSettings))
                 {
                     configTxt = configTxt + server.RawSettings;
                     continue;

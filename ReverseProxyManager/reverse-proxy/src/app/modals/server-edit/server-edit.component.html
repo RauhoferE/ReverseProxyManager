@@ -1,0 +1,147 @@
+<div>
+        <form nz-form [formGroup]="serverForm" (ngSubmit)="submit()">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6">Server name</nz-form-label>
+        <nz-form-control [nzSpan]="12" [nzErrorTip]="errorTpl">
+          <nz-input-group [nzPrefix]="prefixHDDIcon">
+          <input formControlName="name" nz-input placeholder="A unique name" />
+                                <ng-template #errorTpl let-control>
+            @if (control.errors?.['required']) {
+              A Server name is required!
+            }
+            @if (control.errors?.['maxLength']) {
+              The name cant be longer than 100 characters!
+            }
+            @if (control.errors?.['minLength']) {
+              The name cant be shorter than 1 characters!
+            }
+          </ng-template>
+          <ng-template #prefixHDDIcon>
+            <ng-icon name="bootstrapHddRack"></ng-icon>
+          </ng-template>
+          </nz-input-group>
+
+        </nz-form-control>
+      </nz-form-item>
+
+            <nz-form-item>
+        <nz-form-label [nzSpan]="6">Ip Address/URL</nz-form-label>
+        <nz-form-control [nzSpan]="12" [nzErrorTip]="errorTpl">
+          <nz-input-group [nzPrefix]="prefixWifiIcon">
+          <input formControlName="target" nz-input placeholder="http://coolurl" />
+                                <ng-template #errorTpl let-control>
+            @if (control.errors?.['required']) {
+              An URL is required!
+            }
+            @if (control.errors?.['maxLength']) {
+              The URL cant be longer than 250 characters!
+            }
+            @if (control.errors?.['minLength']) {
+              The URL cant be shorter than 1 characters!
+            }
+          </ng-template>
+          <ng-template #prefixWifiIcon>
+            <ng-icon name="bootstrapWifi"></ng-icon>
+          </ng-template>
+          </nz-input-group>
+
+        </nz-form-control>
+      </nz-form-item>
+
+                  <nz-form-item>
+        <nz-form-label [nzSpan]="6">Port</nz-form-label>
+        <nz-form-control [nzSpan]="12" [nzErrorTip]="errorTpl1">
+          <nz-input-group>
+          <input formControlName="targetPort" nz-input placeholder="80" />
+                                <ng-template #errorTpl1 let-control>
+            @if (control.errors?.['required']) {
+              A port is required!
+            }
+            @if (control.errors?.['max']) {
+              The max port number is 65536!
+            }
+            @if (control.errors?.['min']) {
+              The min port is 0!
+            }
+          </ng-template>
+          </nz-input-group>
+
+        </nz-form-control>
+      </nz-form-item>
+
+                        <nz-form-item>
+        <nz-form-label [nzSpan]="6">Active</nz-form-label>
+        <nz-form-control [nzSpan]="12" [nzErrorTip]="errorTpl">
+          <nz-input-group>
+          <input type="checkbox" formControlName="active" nz-input />
+          </nz-input-group>
+
+        </nz-form-control>
+      </nz-form-item>
+
+                              <nz-form-item>
+        <nz-form-label [nzSpan]="6">Uses Http</nz-form-label>
+        <nz-form-control [nzSpan]="12" [nzErrorTip]="errorTpl">
+          <nz-input-group>
+          <input type="checkbox" formControlName="usesHttp" nz-input />
+          </nz-input-group>
+
+        </nz-form-control>
+      </nz-form-item>
+
+                                    <nz-form-item>
+        <nz-form-label [nzSpan]="6">SSL Certificate</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <nz-input-group>
+            <nz-spin [nzSpinning]="isLoadingCertificates" nzTip="Loading Certificates...">
+            <nz-select formControlName="certificateId">
+                    @for (option of activeCerts; track option) {
+                    <nz-option [nzValue]="option.id" [nzLabel]="option.name"></nz-option>
+                    }
+              </nz-select>
+            </nz-spin>
+
+          </nz-input-group>
+
+        </nz-form-control>
+      </nz-form-item>
+
+                                    <nz-form-item>
+        <nz-form-label [nzSpan]="6">Redirects to HTTPS</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <nz-input-group>
+          <input type="checkbox" formControlName="redirectsToHttps" nz-input />
+          </nz-input-group>
+
+        </nz-form-control>
+      </nz-form-item>
+
+                                          <nz-form-item>
+        <nz-form-label [nzSpan]="6">Raw Settings</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <nz-input-group [nzPrefix]="prefixGearIcon">
+          <textarea formControlName="rawSettings" nz-input >
+          </textarea>
+          <ng-template #prefixGearIcon>
+            <ng-icon name="bootstrapGear"></ng-icon>
+          </ng-template>
+          </nz-input-group>
+
+        </nz-form-control>
+      </nz-form-item>
+      <div *ngIf="serverForm.errors && serverForm.errors!['invalidRedirect']" >
+        <p class="text-danger">Redirects to HTTPS is enabled but no SSL Certificate is selected!</p>
+      </div>
+      <div *ngIf="serverForm.errors && serverForm.errors!['usesHttpOrHttpsError']" >
+        <p class="text-danger">The server needs to use either http or https!</p>
+      </div>
+        <div *ngIf="serverForm.errors && serverForm.errors!['invalidCert']" >
+        <p class="text-danger">The server needs to use a valid SSL Certificate if it uses https!</p>
+        </div>
+        </form>
+<hr>
+          <div>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+        <button nz-button nzType="primary" [disabled]="!serverForm.valid" (click)="submit()" >{{submitButton}}</button>
+      </div>
+</div>
