@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import dayjs from 'dayjs';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -13,6 +13,8 @@ import {bootstrapCloudCheck, bootstrapKey, bootstrapBodyText, bootstrapGear,
   } from '@ng-icons/bootstrap-icons';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { ServerEditComponent } from '../../modals/server-edit/server-edit.component';
+import { ManagementService } from '../../services/management/management.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-servers',
@@ -24,18 +26,26 @@ import { ServerEditComponent } from '../../modals/server-edit/server-edit.compon
   templateUrl: './servers.component.html',
   styleUrl: './servers.component.scss'
 })
-export class ServersComponent {
+export class ServersComponent implements OnInit, OnDestroy {
 
 servers: ServerDto[] = [];
 loading: boolean = false;
+destroy$: Subject<void> = new Subject<void>();
 
 /**
  *
  */
-constructor(private modalService: NzModalService) {
+constructor(private modalService: NzModalService, private managementService: ManagementService) {
   
   
 }
+
+  ngOnInit(): void {
+    throw new Error('Method not implemented.');
+  }
+  ngOnDestroy(): void {
+    throw new Error('Method not implemented.');
+  }
 
 getDate(arg0: Date) {
     dayjs(arg0).format('YYYY-MM-DD HH:mm:ss');

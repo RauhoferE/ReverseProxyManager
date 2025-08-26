@@ -6,7 +6,7 @@ import { NzIconDirective, NzIconModule, provideNzIcons } from 'ng-zorro-antd/ico
 import { CommonModule } from '@angular/common';
 import dayjs from 'dayjs';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import {bootstrapX, bootstrapCheckCircle, bootstrapBoxArrowDown, bootstrapPencilSquare, bootstrapTrash, bootstrapExclamationOctagon  } from '@ng-icons/bootstrap-icons';
+import {bootstrapX, bootstrapCheckCircle, bootstrapBoxArrowDown, bootstrapPencilSquare, bootstrapTrash, bootstrapExclamationOctagon, bootstrapSearch  } from '@ng-icons/bootstrap-icons';
 import { CertEditComponent } from "../../modals/cert-edit/cert-edit.component";
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { CertificateService } from '../../services/certificate/certificate.service';
@@ -14,22 +14,25 @@ import { RxjsService } from '../../services/rjxs/rxjs.service';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { FormsModule } from '@angular/forms';
+import { NzInputModule } from 'ng-zorro-antd/input';
 
 @Component({
   selector: 'app-certificates',
   standalone: true,
-  imports: [NzTableModule, NzButtonModule, NzIconModule, CommonModule, NgIcon, NzModalModule, NzPopconfirmModule],
-  providers:[provideIcons({bootstrapX, bootstrapCheckCircle, bootstrapBoxArrowDown, bootstrapPencilSquare, bootstrapTrash, bootstrapExclamationOctagon })],
+  imports: [NzTableModule, NzButtonModule, NzIconModule, CommonModule, NgIcon, NzModalModule, NzPopconfirmModule, FormsModule, NzInputModule],
+  providers:[provideIcons({bootstrapX, bootstrapCheckCircle, bootstrapBoxArrowDown, bootstrapPencilSquare, bootstrapTrash, bootstrapExclamationOctagon, bootstrapSearch })],
   templateUrl: './certificates.component.html',
   styleUrl: './certificates.component.scss'
 })
 export class CertificatesComponent implements OnInit, OnDestroy {
 
-
   certificates: CertificateDto[] = [];
   isLoading: boolean = false;
   destroy$: Subject<void> = new Subject<void>();
   filterInput: string = '';
+  private sortField: string = 'name';
+  private sortOrder: NzTableSortOrder = 'ascend';
 
   /**
    *
@@ -59,12 +62,23 @@ export class CertificatesComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  async resetFilter() {
+    this.filterInput = '';
+    await this.getAllCertificates(this.filterInput, this.sortField, this.sortOrder == null ? true : this.sortOrder == 'ascend');
+  }
+
   async onQueryParamsChange($event: NzTableQueryParams) {
     const { pageSize, pageIndex, sort, filter } = $event;
     const currentSort = sort.find(item => item.value !== null);
     const sortField = (currentSort && currentSort.key) || null;
     const sortOrder = (currentSort && currentSort.value) || null;
-    await this.getAllCertificates(this.filterInput, sortField || 'name', sortOrder == null ? true : sortOrder == 'ascend');
+    this.sortField = sortField || 'name';
+    this.sortOrder = sortOrder || 'ascend';
+    await this.getAllCertificates(this.filterInput, this.sortField, this.sortOrder == null ? true : this.sortOrder == 'ascend');
+}
+
+async applyFilter() {
+  await this.getAllCertificates(this.filterInput, this.sortField, this.sortOrder == null ? true : this.sortOrder == 'ascend');
 }
 
 deleteCertificate(id: number, name: string) {

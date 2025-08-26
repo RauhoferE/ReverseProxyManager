@@ -3,6 +3,23 @@
 <button class="self-end mr-2 mt-4 flex" nz-button nzType="primary" (click)="rescanCertificates()">
   <ng-icon class="self-center" name="bootstrapBoxArrowDown"></ng-icon>
   Rescan SSL Certificates</button>
+  <div>
+    <nz-input-group class="w-1/4 min-w-[200px]" nzSearch [nzAddOnAfter]="suffixIconButton">
+      <input [(ngModel)]="filterInput" type="text" nz-input placeholder="Filter" (keydown.enter)="applyFilter()"/>
+    </nz-input-group>
+    <ng-template #suffixIconButton>
+      <div class="flex flex-row">
+      <button class="flex" nz-button nzType="default" (click)="applyFilter()">
+        <ng-icon class="self-center" name="bootstrapSearch"></ng-icon>
+      </button>
+            <button class="flex" nz-button nzType="default" (click)="resetFilter()">
+        <ng-icon class="self-center" name="bootstrapX" color="red"></ng-icon>
+      </button>
+      </div>
+
+    </ng-template>    
+  </div>
+  
   <nz-table class="mt-4" #filterTable [nzData]="certificates" nzTableLayout="fixed" [nzLoading]="isLoading"
     (nzQueryParams)="onQueryParamsChange($event)">
     <thead>
