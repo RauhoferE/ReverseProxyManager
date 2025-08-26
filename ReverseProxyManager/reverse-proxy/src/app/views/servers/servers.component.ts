@@ -40,6 +40,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 })
 export class ServersComponent implements OnInit, OnDestroy {
 
+
 servers: ServerDto[] = [];
 isLoading: boolean = false;
 destroy$: Subject<void> = new Subject<void>();
@@ -76,6 +77,22 @@ constructor(private modalService: NzModalService, private managementService: Man
 
 getDate(arg0: Date) {
     return dayjs(arg0).format('YYYY-MM-DD HH:mm:ss');
+}
+
+deleteServer(id: number,name: string) {
+  this.rxjsService.setLoading(true);
+  this.managementService.deleteServer(id).subscribe({
+    next: async (res) => {
+      this.rxjsService.setLoading(false);
+      this.messageService.success(`Entry ${name} deleted successfully`);
+      await this.getAllServers(this.filterInput, this.sortField, this.sortOrder == null ? true : this.sortOrder == 'ascend');
+      console.log('Server deleted successfully', res);
+    },
+    error: (err) => {
+      this.rxjsService.setLoading(false);
+      this.messageService.error(err.error?.message || `Failed to delete entry ${name}`);
+      console.error('Failed to delete server', err.error?.message || err);
+    }});
 }
 
 async resetFilter() {

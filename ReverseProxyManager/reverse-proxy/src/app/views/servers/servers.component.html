@@ -51,13 +51,17 @@
         <th nzColumnKey="lastUpdated" [nzSortFn]="true">
           Last Updated
         </th>
+        <th [nzSortFn]="false">
+          Actions
+        </th>
       </tr>
     </thead>
     <tbody>
       @for (data of filterTable.data; track data) {
       <tr>
         <td>{{ data.id }}</td>
-        <td>{{data.name}}</td>
+                <td class="interact-table-col" (click)="openChangeServerModal(data)">
+           <span class="flex self-center">{{ data.name }} <ng-icon class="self-center" name="bootstrapPencilSquare" color="#1890ff"></ng-icon></span></td>
         <td>{{ data.target }}:{{data.targetPort}}</td>
         <td>{{data.active}}</td>
         <td><div>
@@ -75,6 +79,20 @@
           <ng-icon *ngIf="!data.redirectsToHttps" name="bootstrapShuffle" color="red" ></ng-icon>
         </div></td>
         <td>{{ getDate( data.lastUpdated) }}</td>
+        <td>
+                    <a
+                nz-popconfirm
+      [nzIcon]="iconPopConfirm"
+      nzPopconfirmTitle="Are you sure to delete entry {{data.name}}?"
+      [nzOkDanger]="true"
+      (nzOnConfirm)="deleteServer(data.id, data.name)"><ng-icon name="bootstrapTrash" color="red"></ng-icon>
+        </a>
+        </td>
+        <ng-template #iconPopConfirm>
+          <span class="flex self-center">
+            <ng-icon name="bootstrapExclamationOctagon" color="red"></ng-icon>
+          </span>
+        </ng-template>
       </tr>
       }
     </tbody>

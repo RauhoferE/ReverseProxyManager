@@ -53,6 +53,8 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.isLoading = loading;
           }
         });
+
+        this.cookieService.delete('rp-auth');
   }
 
   ngOnDestroy(): void {
