@@ -417,3 +417,7 @@ FodyWeavers.xsd
 *.msm
 *.msp
 /ReverseProxyManager/ReverseProxyManager/appsettings.Development.json
+/ReverseProxyManager/reverse-proxy/ssl
+/ReverseProxyManager/reverse-proxy/.vscode
+/ReverseProxyManager/reverse-proxy/.angular/cache/18.2.20/reverse-proxy/vite/deps
+/ReverseProxyManager/reverse-proxy/.angular/cache/18.2.20/reverse-proxy
