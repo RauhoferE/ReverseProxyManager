@@ -18,6 +18,6 @@ export class IdentityService {
 
   public logout() {
     this.cookieService.delete('rp-auth');
-    return this.http.get<void>(`${environment.appUrl}/api/v1/identity/logout`);
+    return this.http.get<void>(`${environment.appUrl}/api/v1/identity/logout`, {withCredentials: true});
   }
 }
