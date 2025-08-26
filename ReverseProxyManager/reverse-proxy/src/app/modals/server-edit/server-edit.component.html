@@ -52,7 +52,7 @@
         <nz-form-label [nzSpan]="6">Port</nz-form-label>
         <nz-form-control [nzSpan]="12" [nzErrorTip]="errorTpl1">
           <nz-input-group>
-          <input formControlName="port" nz-input placeholder="80" />
+          <input formControlName="targetPort" nz-input placeholder="80" />
                                 <ng-template #errorTpl1 let-control>
             @if (control.errors?.['required']) {
               A port is required!

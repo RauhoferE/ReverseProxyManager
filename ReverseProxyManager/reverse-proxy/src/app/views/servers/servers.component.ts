@@ -15,7 +15,8 @@ import {bootstrapCloudCheck, bootstrapKey, bootstrapBodyText, bootstrapGear,
   bootstrapExclamationOctagon,
   bootstrapSearch,
   bootstrapBoxArrowDown,
-  bootstrapX
+  bootstrapX,
+  bootstrapCheckCircle
   } from '@ng-icons/bootstrap-icons';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { ServerEditComponent } from '../../modals/server-edit/server-edit.component';
@@ -33,7 +34,8 @@ import { NzInputModule } from 'ng-zorro-antd/input';
   standalone: true,
   imports: [NzTableModule, NzButtonModule, NzIconModule, CommonModule, NgIcon, NzModalModule, NzPopconfirmModule, FormsModule, NzInputModule],
   providers: [provideIcons({ bootstrapCloudCheck, bootstrapKey, bootstrapBodyText, bootstrapGear,
-    bootstrapGlobe, bootstrapShuffle, bootstrapHddRack, bootstrapBoxArrowDown, bootstrapPencilSquare, bootstrapTrash, bootstrapExclamationOctagon, bootstrapSearch, bootstrapX
+    bootstrapGlobe, bootstrapShuffle, bootstrapHddRack, bootstrapBoxArrowDown, bootstrapPencilSquare, bootstrapTrash, bootstrapExclamationOctagon, bootstrapSearch, bootstrapX,
+    bootstrapCheckCircle
    })],
   templateUrl: './servers.component.html',
   styleUrl: './servers.component.scss'
@@ -84,7 +86,7 @@ deleteServer(id: number,name: string) {
   this.managementService.deleteServer(id).subscribe({
     next: async (res) => {
       this.rxjsService.setLoading(false);
-      this.messageService.success(`Entry ${name} deleted successfully`);
+      this.messageService.success(`Entry ${name} deleted successfully and configuration written to disk.`);
       await this.getAllServers(this.filterInput, this.sortField, this.sortOrder == null ? true : this.sortOrder == 'ascend');
       console.log('Server deleted successfully', res);
     },

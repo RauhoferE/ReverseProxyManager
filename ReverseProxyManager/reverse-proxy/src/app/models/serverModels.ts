@@ -38,7 +38,7 @@ export interface AddServerDto{
 
         usesHttp: boolean;
 
-        certificate:number;
+        certificateId:number;
 
         redirectsToHttps: boolean;
 
@@ -59,7 +59,7 @@ export interface EditServerDto{
 
         usesHttp: boolean;
 
-        certificate:number;
+        certificateId:number;
 
         redirectsToHttps: boolean;
 

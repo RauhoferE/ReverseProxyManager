@@ -77,24 +77,29 @@ namespace ReverseProxyManager.Services
 
         public async Task ApplyNewConfigAsync()
         {
-            var servers = this.dbContext.Servers.Include(x => x.Certificate);
+            var servers = this.dbContext.Servers.Include(x => x.Certificate).Where(x => x.Active);
             foreach (var server in servers)
             {
                 server.IsUpToDate = true;
             }
 
             await this.dbContext.SaveChangesAsync();
-            await this.fileService.CreateNginxConfigAsync(servers.Where(x => x.Active).ToList());
+            await this.fileService.CreateNginxConfigAsync(servers.ToList());
         }
 
         public async Task DeleteServerAsync(int id)
         {
-            var exisitingServer = this.dbContext.Servers.FirstOrDefault(x => x.Id == id);
+            var exisitingServer = this.dbContext.Servers
+                .Include(x => x.Certificate)
+                .FirstOrDefault(x => x.Id == id);
 
             if (exisitingServer == null)
             {
                 throw new AlreadyExistsException($"Server with name {exisitingServer.Name} doesnt exists!");
             }
+
+            exisitingServer.Certificate = null;
+            await this.dbContext.SaveChangesAsync();
 
             this.dbContext.Servers.Remove(exisitingServer);
             await this.dbContext.SaveChangesAsync();

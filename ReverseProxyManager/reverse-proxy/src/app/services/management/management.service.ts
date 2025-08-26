@@ -16,15 +16,35 @@ export class ManagementService {
       filterString = '';
     }
 
-    return this.http.get<ServerDto[]>(`${environment.appUrl}/api/v1/management?${filter}sortAfter=${sortAfter}&asc=${asc}`, {withCredentials: true});
+    return this.http.get<ServerDto[]>(`${environment.appUrl}/api/v1/management?${filterString}sortAfter=${sortAfter}&asc=${asc}`, {withCredentials: true});
   }
 
   public addServer(dto: AddServerDto){
-    return this.http.post<void>(`${environment.appUrl}/api/v1/management`, dto, {withCredentials: true});
+    var newDto: any = {
+      active: dto.active,
+      certificateId: dto.certificateId,
+      name: dto.name,
+      rawSettings: dto.rawSettings,
+      redirectsToHttps: dto.rawSettings == '' ? dto.redirectsToHttps : false,
+      usesHttp: dto.rawSettings == '' ? dto.usesHttp : false,
+      target: dto.rawSettings == '' ? dto.target : null,
+      targetPort: dto.rawSettings == '' ? dto.targetPort : null,
+    }
+    return this.http.post<void>(`${environment.appUrl}/api/v1/management`, newDto, {withCredentials: true});
   }
 
   public updateServer(id:number, dto: AddServerDto){
-    return this.http.put<void>(`${environment.appUrl}/api/v1/management/${id}`, dto, {withCredentials: true});
+        var newDto: any = {
+      active: dto.active,
+      certificateId: dto.certificateId,
+      name: dto.name,
+      rawSettings: dto.rawSettings,
+      redirectsToHttps: dto.rawSettings == '' ? dto.redirectsToHttps : false,
+      usesHttp: dto.rawSettings == '' ? dto.usesHttp : false,
+      target: dto.rawSettings == '' ? dto.target : null,
+      targetPort: dto.rawSettings == '' ? dto.targetPort : null,
+    }
+    return this.http.put<void>(`${environment.appUrl}/api/v1/management/${id}`, newDto, {withCredentials: true});
   }
 
   public deleteServer(id:number){

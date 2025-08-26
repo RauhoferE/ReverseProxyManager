@@ -21,7 +21,8 @@
   </div>
   
   <nz-table class="mt-4" #filterTable [nzData]="certificates" nzTableLayout="fixed" [nzLoading]="isLoading"
-    (nzQueryParams)="onQueryParamsChange($event)">
+    (nzQueryParams)="onQueryParamsChange($event)" 
+    [nzShowPagination]="false">
     <thead>
       <tr>
         <th>

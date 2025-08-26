@@ -59,7 +59,7 @@ private message: NzMessageService) {
           // Validators.required,,Validators.maxLength(250),
           // Validators.minLength(1)
         ]],
-        port: [data['port']|| '', [
+        targetPort: [data['port']|| '', [
           //rawSettingsNumberValidator(0, 65536),
           // Validators.required,,Validators.max(65536),
           // Validators.min(0)
@@ -76,7 +76,7 @@ private message: NzMessageService) {
         httpsCertificateValidator(),
         rawSettingsStringValidator(1, 100, 'name'),
         rawSettingsStringValidator(1, 250, 'target'),
-        rawSettingsNumberValidator(0, 65536, 'port')
+        rawSettingsNumberValidator(0, 65536, 'targetPort')
       ]
     });
   
@@ -126,8 +126,8 @@ get name() {
     return this.serverForm.get('target');
   }
 
-  get port() {
-    return this.serverForm.get('port');
+  get targetPort() {
+    return this.serverForm.get('targetPort');
   }
 
   get usesHttp() {

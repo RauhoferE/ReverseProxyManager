@@ -1,11 +1,11 @@
 <div class="flex flex-col">
   <div class="flex flex-row">
-<button class="self-start ml-2 mr-2 mt-4" nz-button nzType="primary" (click)="openAddServerModal()">
-<ng-icon name="bootstrapHddRack"></ng-icon>
+<button class="self-start ml-2 mr-2 mt-4 flex" nz-button nzType="primary" (click)="openAddServerModal()">
+<ng-icon class="self-center" name="bootstrapHddRack"></ng-icon>
   Add new server
 </button>
-<button class="self-end mr-2 mt-4" nz-button nzType="primary" (click)="recreateConfig()">
-<ng-icon name="bootstrapGear"></ng-icon>
+<button class="self-end mr-2 mt-4 flex" nz-button nzType="primary" (click)="recreateConfig()">
+<ng-icon class="self-center" name="bootstrapGear"></ng-icon>
   Recreate Config
 </button>
   </div>
@@ -27,31 +27,32 @@
   </div>
 
   <nz-table class="mt-4" #filterTable [nzData]="servers" nzTableLayout="fixed" [nzLoading]="isLoading"
-    (nzQueryParams)="onQueryParamsChange($event)">
+    (nzQueryParams)="onQueryParamsChange($event)"
+    [nzShowPagination]="false">
     <thead>
       <tr>
-        <th>
+        <th nzWidth="50px">
           Id
         </th>
                 <th nzColumnKey="name" [nzSortFn]="true">
           Name
         </th>
-        <th >
+        <th nzWidth="150px" >
           Url And Port
         </th>
-        <th nzColumnKey="active" [nzSortFn]="true">
+        <th nzColumnKey="active" [nzSortFn]="true" nzWidth="80px">
             Active
         </th>
-        <th>
-          Synced/UsesRawSettings
+        <th [nzSortFn]="false" nzWidth="80px">
+            Is in Config
         </th>
-        <th>
-            Http/Https/RedirectsToHttps
+        <th [nzSortFn]="false">
+          Protocols
         </th>
         <th nzColumnKey="lastUpdated" [nzSortFn]="true">
           Last Updated
         </th>
-        <th [nzSortFn]="false">
+        <th nzWidth="80px" [nzSortFn]="false">
           Actions
         </th>
       </tr>
@@ -62,22 +63,46 @@
         <td>{{ data.id }}</td>
                 <td class="interact-table-col" (click)="openChangeServerModal(data)">
            <span class="flex self-center">{{ data.name }} <ng-icon class="self-center" name="bootstrapPencilSquare" color="#1890ff"></ng-icon></span></td>
-        <td>{{ data.target }}:{{data.targetPort}}</td>
-        <td>{{data.active}}</td>
-        <td><div>
-          <ng-icon *ngIf="data.isUpToDate" name="bootstrapCloudCheck" color="green"></ng-icon>
-          <ng-icon *ngIf="!data.isUpToDate" name="bootstrapCloudCheck" color="red"></ng-icon>
-          <ng-icon *ngIf="data.rawSettings" name="bootstrapBodyText" color="green"></ng-icon>
-          <ng-icon *ngIf="!data.rawSettings" name="bootstrapBodyText" color="red" ></ng-icon>
-        </div></td>
-                <td><div>
-                            <ng-icon *ngIf="data.usesHttp" name="bootstrapGlobe" color="green"></ng-icon>
-          <ng-icon *ngIf="!data.usesHttp" name="bootstrapGlobe" color="red"></ng-icon>
-          <ng-icon *ngIf="data.certificate" name="bootstrapKey" color="green"></ng-icon>
-          <ng-icon *ngIf="!data.certificate" name="bootstrapKey" color="red" ></ng-icon>
-                    <ng-icon *ngIf="data.redirectsToHttps" name="bootstrapShuffle" color="green"></ng-icon>
-          <ng-icon *ngIf="!data.redirectsToHttps" name="bootstrapShuffle" color="red" ></ng-icon>
-        </div></td>
+        <td>
+          <span *ngIf="!data.rawSettings">
+            {{ data.target }}:{{data.targetPort}}
+          </span>
+                    <span *ngIf="data.rawSettings">
+            -
+          </span>
+        </td>
+        <td>
+            <span class="flex self-center">
+            <ng-icon *ngIf="data.active" name="bootstrapCheckCircle" color="green"></ng-icon>
+            <ng-icon *ngIf="!data.active" name="bootstrapX" color="red"></ng-icon>
+          </span>
+        </td>
+        <td>
+            <span class="flex self-center">
+            <ng-icon *ngIf="data.isUpToDate" name="bootstrapCheckCircle" color="green"></ng-icon>
+            <ng-icon *ngIf="!data.isUpToDate" name="bootstrapX" color="red"></ng-icon>
+          </span>
+        </td>
+        <td>
+          <div class="flex flex-col">
+            <span class="flex" *ngIf="data.usesHttp && !data.rawSettings">
+              Http
+              <ng-icon class="self-center"  name="bootstrapGlobe"></ng-icon>
+            </span>
+            <span class="flex" *ngIf="data.certificate && !data.rawSettings">
+              Https
+              <ng-icon class="self-center" name="bootstrapKey"></ng-icon>
+            </span>
+            <span class="flex" *ngIf="data.redirectsToHttps && !data.rawSettings">
+              Redirect Traffic to Https
+              <ng-icon class="self-center" name="bootstrapShuffle"></ng-icon>
+            </span>
+            <span class="flex" *ngIf="data.rawSettings">
+              Uses Custom Settings
+              <ng-icon class="self-center" name="bootstrapBodyText"></ng-icon>
+            </span>
+          </div>
+        </td>
         <td>{{ getDate( data.lastUpdated) }}</td>
         <td>
                     <a
