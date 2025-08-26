@@ -125,6 +125,10 @@ namespace ReverseProxyManager
             CreateDbAndApplyMigration(app);
 
             app.UseCors("ReverseProxyPolicy");
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+            
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -134,7 +138,6 @@ namespace ReverseProxyManager
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
 
             app.UseRouting();
 
@@ -142,6 +145,7 @@ namespace ReverseProxyManager
             app.UseAuthorization();
 
             app.MapControllers();
+            app.MapFallbackToFile("index.html");
 
             app.Run();
         }

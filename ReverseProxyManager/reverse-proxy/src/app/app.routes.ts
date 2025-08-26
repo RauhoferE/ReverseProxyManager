@@ -4,9 +4,10 @@ import { LoginComponent } from './views/login/login.component';
 import { ServersComponent } from './views/servers/servers.component';
 import { CertificatesComponent } from './views/certificates/certificates.component';
 import { HelpComponent } from './views/help/help.component';
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-      { path: '', component: BaseComponent, children: [
+      { path: '', component: BaseComponent, canActivate: [AuthGuard], children: [
         {
             path: 'servers', component: ServersComponent
         },
