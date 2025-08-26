@@ -6,19 +6,20 @@ import { NzIconDirective, NzIconModule, provideNzIcons } from 'ng-zorro-antd/ico
 import { CommonModule } from '@angular/common';
 import dayjs from 'dayjs';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import {bootstrapX, bootstrapCheckCircle, bootstrapBoxArrowDown, bootstrapPencilSquare, bootstrapTrash  } from '@ng-icons/bootstrap-icons';
+import {bootstrapX, bootstrapCheckCircle, bootstrapBoxArrowDown, bootstrapPencilSquare, bootstrapTrash, bootstrapExclamationOctagon  } from '@ng-icons/bootstrap-icons';
 import { CertEditComponent } from "../../modals/cert-edit/cert-edit.component";
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { CertificateService } from '../../services/certificate/certificate.service';
 import { RxjsService } from '../../services/rjxs/rxjs.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 
 @Component({
   selector: 'app-certificates',
   standalone: true,
-  imports: [NzTableModule, NzButtonModule, NzIconModule, CommonModule, NgIcon, CertEditComponent, NzModalModule],
-  providers:[provideIcons({bootstrapX, bootstrapCheckCircle, bootstrapBoxArrowDown, bootstrapPencilSquare, bootstrapTrash })],
+  imports: [NzTableModule, NzButtonModule, NzIconModule, CommonModule, NgIcon, NzModalModule, NzPopconfirmModule],
+  providers:[provideIcons({bootstrapX, bootstrapCheckCircle, bootstrapBoxArrowDown, bootstrapPencilSquare, bootstrapTrash, bootstrapExclamationOctagon })],
   templateUrl: './certificates.component.html',
   styleUrl: './certificates.component.scss'
 })
@@ -66,8 +67,19 @@ export class CertificatesComponent implements OnInit, OnDestroy {
     await this.getAllCertificates(this.filterInput, sortField || 'name', sortOrder == null ? true : sortOrder == 'ascend');
 }
 
-async deleteCertificate(id: number) {
-  //this.message.
+deleteCertificate(id: number, name: string) {
+  this.isLoading = true;
+  this.certificateService.deleteCertificate(id).subscribe({
+    next: async (res) => {
+      this.isLoading = false;
+      this.message.success(`Certificate ${name} deleted successfully`);
+      this.certificates = this.certificates.filter(x => x.id != id);
+    },
+    error: (err) => {
+      this.isLoading = false;
+      this.message.error(err.error?.message || 'Failed to delete certificate');
+      console.error('Failed to delete certificate', err.error?.message || err);
+    }});
 }
 
 async getAllCertificates(filter: string, sortAfter: string, asc: boolean) {

@@ -1,7 +1,7 @@
 <div class="flex flex-col">
 
-<button class="self-end mr-2 mt-4" nz-button nzType="primary" (click)="rescanCertificates()">
-  <ng-icon name="bootstrapBoxArrowDown"></ng-icon>
+<button class="self-end mr-2 mt-4 flex" nz-button nzType="primary" (click)="rescanCertificates()">
+  <ng-icon class="self-center" name="bootstrapBoxArrowDown"></ng-icon>
   Rescan SSL Certificates</button>
   <nz-table class="mt-4" #filterTable [nzData]="certificates" nzTableLayout="fixed" [nzLoading]="isLoading"
     (nzQueryParams)="onQueryParamsChange($event)">
@@ -13,11 +13,14 @@
         <th nzColumnKey="name" [nzSortFn]="true">
           Name
         </th>
+                <th nzColumnKey="fileAttached" [nzSortFn]="true">
+          FileAttached
+        </th>
         <th>
           Server
         </th>
-        <th nzColumnKey="fileAttached" [nzSortFn]="true">
-          FileAttached
+        <th nzColumnKey="issuer" [nzSortFn]="true">
+          Valid Not Before
         </th>
         <th nzColumnKey="validNotBefore" [nzSortFn]="true">
           Valid Not Before
@@ -28,6 +31,10 @@
         <th nzColumnKey="dateUpdated" [nzSortFn]="true">
           Last Updated
         </th>
+        <th [nzSortFn]="false">
+          Actions
+
+        </th>
 
       </tr>
     </thead>
@@ -35,11 +42,15 @@
       @for (data of filterTable.data; track data) {
       <tr >
         <td>{{ data.id }}</td>
-        <td class="interact-table-col" (click)="openEditCertModal(data.id, data.name)">{{ data.name }} <ng-icon name="bootstrapPencilSquare" color="#1890ff"></ng-icon></td>
+        <td class="interact-table-col" (click)="openEditCertModal(data.id, data.name)">
+           <span class="flex self-center">{{ data.name }} <ng-icon class="self-center" name="bootstrapPencilSquare" color="#1890ff"></ng-icon></span></td>
                 <td>
-          <ng-container>
+          <ng-container> 
+            <span class="flex self-center">
             <ng-icon *ngIf="data.isUpToDate" name="bootstrapCheckCircle" color="green"></ng-icon>
             <ng-icon *ngIf="!data.isUpToDate" name="bootstrapX" color="red"></ng-icon>
+          </span>
+
           </ng-container>
         </td>
         <td>{{ data.serverEntity != null ? data.serverEntity.name : '-' }}</td>
@@ -48,8 +59,20 @@
         <td>{{ getDate( data.validNotAfter) }}</td>
         <td>{{ getDate( data.lastUpdated) }}</td>
         <td>
-          <button nz-button nzType="default" (click)="deleteCertificate(data.id)"><ng-icon name="bootstrapTrash" color="red"></ng-icon></button>
+          <a
+                nz-popconfirm
+      [nzIcon]="iconPopConfirm"
+      nzPopconfirmTitle="Are you sure to delete certificate {{data.name}}?"
+      [nzOkDanger]="true"
+      (nzOnConfirm)="deleteCertificate(data.id, data.name)"><ng-icon name="bootstrapTrash" color="red"></ng-icon>
+        </a>
         </td>
+        <ng-template #iconPopConfirm>
+          <span class="flex self-center">
+            <ng-icon name="bootstrapExclamationOctagon" color="red"></ng-icon>
+          </span>
+          
+        </ng-template>
 
       </tr>
       }
