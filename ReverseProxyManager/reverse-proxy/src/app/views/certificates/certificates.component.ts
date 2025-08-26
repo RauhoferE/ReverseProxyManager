@@ -119,14 +119,11 @@ async getAllCertificates(filter: string, sortAfter: string, asc: boolean) {
       this.rxjsService.setLoading(false);
       this.message.success('Certificates rescanned successfully');
       await this.getAllCertificates(this.filterInput, 'name', true);
-      // this.loading = false;
-      // this.certificates = res;
       console.log('Certificates rescanned successfully', res);
     },
     error: (err) => {
       this.rxjsService.setLoading(false);
       this.message.error(err.error?.message || 'Failed to rescan certificates');
-      //this.loading = false;
       console.error('Failed to rescan certificates', err.error?.message || err);
     }});
 

@@ -11,7 +11,12 @@ export class ManagementService {
   constructor(private http:HttpClient) { }
 
   public getServers(filter: string, sortAfter: string, asc: boolean){
-    return this.http.get<ServerDto[]>(`${environment.appUrl}/api/v1/management?filter=${filter}&sort=${sortAfter}&asc=${asc}`, {withCredentials: true});
+    var filterString = `filter=${filter}&`
+    if (!filter) {
+      filterString = '';
+    }
+
+    return this.http.get<ServerDto[]>(`${environment.appUrl}/api/v1/management?${filter}sortAfter=${sortAfter}&asc=${asc}`, {withCredentials: true});
   }
 
   public addServer(dto: AddServerDto){
