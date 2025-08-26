@@ -10,12 +10,17 @@ import { IdNameDto } from '../../models/certificateModels';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { httpsCertificateValidator, rawSettingsNumberValidator, rawSettingsStringValidator, redirectsToHttpsValidator, usesHttpOrHttpsValidator } from '../../validators/form-validators';
 import { NgIf } from '@angular/common';
+import { CertificateService } from '../../services/certificate/certificate.service';
+import { RxjsService } from '../../services/rjxs/rxjs.service';
+import { Subject, takeUntil } from 'rxjs';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 @Component({
   selector: 'app-server-edit',
   standalone: true,
   imports: [NzModalModule, FormsModule, NzFormModule, NzInputModule, ReactiveFormsModule, NzButtonModule,
-    NgIcon, NzSelectModule, NgIf],
+    NgIcon, NzSelectModule, NgIf, NzSpinModule],
   providers:[provideIcons({bootstrapHddRack, bootstrapWifi,
     bootstrapGear
    })],
@@ -27,13 +32,19 @@ serverForm: FormGroup = {} as any;
 certificateId: number = -1;
 activeCerts: IdNameDto[] = [
   { id: -1, name: 'No Certificate' },
-  { id: 1, name: 'Example Certificate' } // Example data, replace with actual certificate data
+  //{ id: 1, name: 'Example Certificate' } // Example data, replace with actual certificate data
 ];
 submitButton: string = 'Change';
+
+isLoadingCertificates: boolean = false;
+
+destroy$: Subject<void> = new Subject<void>();
 /**
  *
  */
-constructor(private fb: FormBuilder, private modal: NzModalRef, @Inject(NZ_MODAL_DATA) public data: any) {
+constructor(private fb: FormBuilder, private modal: NzModalRef, @Inject(NZ_MODAL_DATA) public data: any,
+private certificateService: CertificateService,
+private message: NzMessageService) {
 
   this.submitButton = data['submitName'] || 'Change';
       this.serverForm = this.fb.group({
@@ -71,13 +82,28 @@ constructor(private fb: FormBuilder, private modal: NzModalRef, @Inject(NZ_MODAL
   
 }
 
-  ngOnInit(): void {
-    
+  async ngOnInit() {
+        await this.getActiveCertificates();
   }
 
 handleCancel() {
   this.modal.destroy(null);
 }
+
+async getActiveCertificates() {
+  this.isLoadingCertificates = true;
+  this.certificateService.getActiveCertificates().subscribe({
+    next: (res) => {
+      this.isLoadingCertificates = false;
+      this.activeCerts = [{ id: -1, name: 'No Certificate' }, ...res];
+      console.log('Certificates loaded successfully', res);
+    },
+    error: (err) => {
+      this.isLoadingCertificates = false;
+      this.message.error('Failed to load certificates');
+      console.error('Failed to load certificates', err);
+    }});
+  }
 
 submit() {
   this.serverForm.updateValueAndValidity();

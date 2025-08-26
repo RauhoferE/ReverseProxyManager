@@ -93,11 +93,14 @@
         <nz-form-label [nzSpan]="6">SSL Certificate</nz-form-label>
         <nz-form-control [nzSpan]="12">
           <nz-input-group>
+            <nz-spin [nzSpinning]="isLoadingCertificates" nzTip="Loading Certificates...">
             <nz-select formControlName="certificateId">
                     @for (option of activeCerts; track option) {
                     <nz-option [nzValue]="option.id" [nzLabel]="option.name"></nz-option>
                     }
               </nz-select>
+            </nz-spin>
+
           </nz-input-group>
 
         </nz-form-control>
