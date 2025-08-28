@@ -2,6 +2,8 @@
 
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+#RUN addgroup -S appuser && appuser -S appuser -G appuser
+#RUN chown -R appuser:appuser /etc
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
@@ -9,6 +11,15 @@ EXPOSE 8081
 
 # Put all of the settings from the appsettings in here
 # For the files use the default nginx folders /nginx -> /includes /conf.d /ssl /html
+
+FROM node:22 AS build-frontend
+WORKDIR /frontend
+COPY "reverse-proxy/package.json" "reverse-proxy/package-lock.json" ./
+RUN npm install
+#RUN --mount=type=cache,target=/root/.npm npm ci
+COPY reverse-proxy/ .
+RUN npm run build -- --output-path=./wwwroot
+#RUN npm run build
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
@@ -29,4 +40,7 @@ RUN dotnet publish "./ReverseProxyManager.csproj" -c $BUILD_CONFIGURATION -o /ap
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY --from=build-frontend /frontend/wwwroot ./wwwroot
+#USER appuser
+
 ENTRYPOINT ["dotnet", "ReverseProxyManager.dll"]
