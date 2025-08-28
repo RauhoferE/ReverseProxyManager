@@ -4,9 +4,10 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER $APP_UID
 WORKDIR /app
-EXPOSE 8080 # net
-EXPOSE 8081 # net
-EXPOSE 80 # nginx
+EXPOSE 8080 
+EXPOSE 80 
+#EXPOSE 8081 
+
 
 # Put all of the settings from the appsettings in here
 # For the files use the default nginx folders /nginx -> /includes /conf.d /ssl /html
@@ -42,11 +43,18 @@ COPY --from=publish /app/publish .
 COPY --from=build-frontend /frontend/wwwroot ./wwwroot
 USER root
 RUN mkdir /etc/data
+RUN mkdir -p /etc/nginx/conf.d
+RUN mkdir -p /etc/ssl/certs/nginx
 RUN chown -R app:app /etc/data
+RUN chown -R app:app /etc/nginx
+RUN chown -R app:app /etc/ssl/certs/nginx
+RUN chmod -R 755 /etc/ssl/certs/nginx
+RUN chmod -R 755 /etc/nginx
+RUN chmod -R 755 /etc/data
 RUN apt-get update && apt-get install -y nginx
 COPY "ReverseProxyManager/docker-entrypoint.sh" .
 RUN chmod +x docker-entrypoint.sh
-USER app
+USER root
 
 
 #ENTRYPOINT ["dotnet", "ReverseProxyManager.dll"]

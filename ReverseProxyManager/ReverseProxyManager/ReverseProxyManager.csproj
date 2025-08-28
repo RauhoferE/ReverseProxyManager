@@ -7,6 +7,10 @@
     <UserSecretsId>d9a88132-18f6-4ba4-a51b-b9947882856f</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
+	<PropertyGroup>
+		<!-- other property settings -->
+		<DockerfileFastModeStage>final</DockerfileFastModeStage>
+	</PropertyGroup>
 
   <ItemGroup>
     <Content Remove="appsettings.development.json" />

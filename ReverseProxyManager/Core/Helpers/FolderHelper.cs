@@ -24,6 +24,22 @@ namespace Core.Helpers
             throw new NotSupportedException("Os not supported");
         }
 
+        public static string GetSqliteFolderPath()
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sqlite");
+            }
+
+            if (OperatingSystem.IsLinux())
+            {
+                // Todo: create folder
+                return "/etc/data";
+            }
+
+            throw new NotSupportedException("Os not supported");
+        }
+
         public static string GetNginxConfigFilePath()
         {
             if (OperatingSystem.IsWindows())
@@ -54,23 +70,38 @@ namespace Core.Helpers
 
         public static void CreateSystemFolders()
         {
-            if (OperatingSystem.IsWindows())
+            if (!Directory.Exists(GetSqliteFolderPath()))
             {
-                Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sqlite"));
-                Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "nginx\\conf.d"));
-                Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ssl"));
-                return;
+                Directory.CreateDirectory(GetSqliteFolderPath());
             }
 
-            if (OperatingSystem.IsLinux())
+            if (!Directory.Exists(GetSSlFolderPath()))
             {
-                Directory.CreateDirectory("/etc/data");
-                Directory.CreateDirectory("/etc/nginx/conf.d");
-                Directory.CreateDirectory("/etc/ssl/certs/nginx");
-                return;
+                Directory.CreateDirectory(GetSSlFolderPath());
             }
 
-            throw new NotSupportedException("Os not supported");
+            if (!Directory.Exists(GetNginxConfigFilePath()))
+            {
+                Directory.CreateDirectory(GetNginxConfigFilePath());
+            }
+
+            //if (OperatingSystem.IsWindows())
+            //{
+            //    Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sqlite"));
+            //    Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "nginx\\conf.d"));
+            //    Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ssl"));
+            //    return;
+            //}
+
+            //if (OperatingSystem.IsLinux())
+            //{
+            //    Directory.CreateDirectory("/etc/data");
+            //    Directory.CreateDirectory("/etc/nginx/conf.d");
+            //    Directory.CreateDirectory("/etc/ssl/certs/nginx");
+            //    return;
+            //}
+
+            //throw new NotSupportedException("Os not supported");
 
         }
     }
