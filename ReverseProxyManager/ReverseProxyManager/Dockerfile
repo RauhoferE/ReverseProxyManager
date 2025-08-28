@@ -2,12 +2,11 @@
 
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-#RUN addgroup -S appuser && appuser -S appuser -G appuser
-#RUN chown -R appuser:appuser /etc
 USER $APP_UID
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
+EXPOSE 8080 # net
+EXPOSE 8081 # net
+EXPOSE 80 # nginx
 
 # Put all of the settings from the appsettings in here
 # For the files use the default nginx folders /nginx -> /includes /conf.d /ssl /html
@@ -41,6 +40,14 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 COPY --from=build-frontend /frontend/wwwroot ./wwwroot
-#USER appuser
+USER root
+RUN mkdir /etc/data
+RUN chown -R app:app /etc/data
+RUN apt-get update && apt-get install -y nginx
+COPY "ReverseProxyManager/docker-entrypoint.sh" .
+RUN chmod +x docker-entrypoint.sh
+USER app
 
-ENTRYPOINT ["dotnet", "ReverseProxyManager.dll"]
+
+#ENTRYPOINT ["dotnet", "ReverseProxyManager.dll"]
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
