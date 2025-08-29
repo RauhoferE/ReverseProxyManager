@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ReverseProxyManager.Requests;
 using ReverseProxyManager.Services;
+using Serilog;
 
 namespace ReverseProxyManager.Controllers
 {
@@ -51,6 +52,7 @@ namespace ReverseProxyManager.Controllers
         [HttpGet(ApiRoutes.Management.ApplyConfig)]
         public async Task<IActionResult> ApplyNewConfig()
         {
+            Log.Information("apply");
             await this.managementService.ApplyNewConfigAsync();
             return Ok();
         }
@@ -59,7 +61,13 @@ namespace ReverseProxyManager.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> RestartNginx()
         {
-            await this.processService.RestartNginxServer();
+            var t = await this.processService.RestartNginxServer();
+
+            if (!t)
+            {
+                return BadRequest();
+            }
+
             return Ok();
         }
     }

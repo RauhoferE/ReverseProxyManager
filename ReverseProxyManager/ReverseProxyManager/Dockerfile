@@ -18,7 +18,7 @@ COPY "reverse-proxy/package.json" "reverse-proxy/package-lock.json" ./
 RUN npm install
 #RUN --mount=type=cache,target=/root/.npm npm ci
 COPY reverse-proxy/ .
-RUN npm run build -- --output-path=./wwwroot
+RUN npm run build
 #RUN npm run build
 
 # This stage is used to build the service project
