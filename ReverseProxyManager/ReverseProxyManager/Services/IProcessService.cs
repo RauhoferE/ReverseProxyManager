@@ -2,6 +2,6 @@
 {
     public interface IProcessService
     {
-        Task<bool> RestartNginxServer();
+        Task<(bool, string)> RestartNginxServer();
     }
 }

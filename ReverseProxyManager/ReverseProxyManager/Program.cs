@@ -31,9 +31,14 @@ namespace ReverseProxyManager
                 .AddEnvironmentVariables()
                 .Build();
 
+            builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(builder.Configuration));
+
             Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(configuration)
-                .CreateLogger();
+    .ReadFrom.Configuration(configuration)
+    .CreateLogger();
+
+            builder.Services.AddSerilog();
 
             // Add services to the container.
             builder.Services.AddControllers();
@@ -119,6 +124,7 @@ namespace ReverseProxyManager
             builder.Services.AddTransient<ICertificationService, CertificationService>();
             builder.Services.AddTransient<IUserService, UserService>();
             builder.Services.AddTransient<IManagementService, ManagementService>();
+            
 
             var app = builder.Build();
 
