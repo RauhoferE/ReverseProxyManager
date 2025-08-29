@@ -115,6 +115,7 @@ namespace ReverseProxyManager
 
             // Services
             builder.Services.AddTransient<IFileService, FileService>();
+            builder.Services.AddTransient<IProcessService, ProcessService>();
             builder.Services.AddTransient<ICertificationService, CertificationService>();
             builder.Services.AddTransient<IUserService, UserService>();
             builder.Services.AddTransient<IManagementService, ManagementService>();

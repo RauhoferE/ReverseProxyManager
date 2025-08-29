@@ -18,12 +18,15 @@ namespace ReverseProxyManager.Services
 
         private readonly IMapper mapper;
 
+        private readonly IProcessService processService;
+
         public ManagementService(IFileService fileService, ReverseProxyDbContext dbContext,
-            IMapper mapper)
+            IMapper mapper, IProcessService processService)
         {
             this.fileService = fileService;
             this.dbContext = dbContext;
             this.mapper = mapper;
+            this.processService = processService;
         }
 
         public async Task AddNewServerAsync(EditServerRequest request)
@@ -85,6 +88,7 @@ namespace ReverseProxyManager.Services
 
             await this.dbContext.SaveChangesAsync();
             await this.fileService.CreateNginxConfigAsync(servers.ToList());
+            await this.processService.RestartNginxServer();
         }
 
         public async Task DeleteServerAsync(int id)

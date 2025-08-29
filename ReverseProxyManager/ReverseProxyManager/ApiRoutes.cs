@@ -32,6 +32,7 @@
             public const string GetServers = "";
             public const string UpdateAndDeleteServer = "{id:int}";
             public const string ApplyConfig = "apply-config";
+            public const string RestartService = "restart";
 
         }
     }

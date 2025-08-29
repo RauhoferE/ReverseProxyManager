@@ -12,10 +12,12 @@ namespace ReverseProxyManager.Controllers
     {
         private readonly IManagementService managementService;
 
+        private readonly IProcessService processService;
 
-        public ManagementController(IManagementService managementService)
+        public ManagementController(IManagementService managementService, IProcessService processService)
         {
             this.managementService = managementService;
+            this.processService = processService;
         }
 
         [HttpGet(ApiRoutes.Management.GetServers)]
@@ -50,6 +52,14 @@ namespace ReverseProxyManager.Controllers
         public async Task<IActionResult> ApplyNewConfig()
         {
             await this.managementService.ApplyNewConfigAsync();
+            return Ok();
+        }
+
+        [HttpGet(ApiRoutes.Management.RestartService)]
+        [AllowAnonymous]
+        public async Task<IActionResult> RestartNginx()
+        {
+            await this.processService.RestartNginxServer();
             return Ok();
         }
     }
