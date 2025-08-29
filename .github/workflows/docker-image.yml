@@ -13,10 +13,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build -f ./ReverseProxyManager/ReverseProxyManager/Dockerfile ./ReverseProxyManager/ --tag rauhofere/reverse-proxy-manager --build-arg "BUILD_CONFIGURATION=Release" 
+      run: docker build -f ./ReverseProxyManager/ReverseProxyManager/Dockerfile ./ReverseProxyManager/ --tag rauhofere/reverse-proxy-manager:latest --build-arg "BUILD_CONFIGURATION=Release" 
     - name: Push Image to Hub
       run: |
         docker login -u rauhofere -p ${{ secrets.DOCKER_HUB_TOKEN }}
-        docker tag rauhofere/reverse-proxy-manager rauhofere/reverse-proxy-manager:$(date +%s)
-        docker push rauhofere/reverse-proxy-manager:$(date +%s)
+        docker push rauhofere/reverse-proxy-manager:latest
   
