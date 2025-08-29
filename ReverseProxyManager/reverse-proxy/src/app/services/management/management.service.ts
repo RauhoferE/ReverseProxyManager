@@ -54,4 +54,8 @@ export class ManagementService {
   public applyNewConfig(){
     return this.http.get<void>(`${environment.appUrl}/api/v1/management/apply-config`, {withCredentials: true});
   }
+
+    public restartService(){
+    return this.http.get<void>(`${environment.appUrl}/api/v1/management/restart`, {withCredentials: true});
+  }
 }

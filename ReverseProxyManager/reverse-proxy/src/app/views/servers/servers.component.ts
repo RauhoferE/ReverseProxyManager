@@ -41,6 +41,20 @@ import { NzInputModule } from 'ng-zorro-antd/input';
   styleUrl: './servers.component.scss'
 })
 export class ServersComponent implements OnInit, OnDestroy {
+restartNginx() {
+  this.rxjsService.setLoading(true);
+ this.managementService.restartService().subscribe({
+  next: async (res) => {
+    this.rxjsService.setLoading(false);
+    this.messageService.success('Nginx successfully restarted');
+    console.log('Configuration recreated successfully', res);
+  },
+  error: (err) => {
+    this.rxjsService.setLoading(false);
+    this.messageService.error(err.error?.message || 'Failed to restart nginx');
+    console.log('Failed to restart nginx', err.error?.message || err);
+  }});
+}
 
 
 servers: ServerDto[] = [];
