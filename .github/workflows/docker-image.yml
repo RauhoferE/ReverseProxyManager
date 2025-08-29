@@ -13,5 +13,5 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build -f ./ReverseProxyManager/ReverseProxyManager/ --tag reverse-proxy-manager:$(date +%s) --build-arg "BUILD_CONFIGURATION=Release" "./ReverseProxyManager/ReverseProxyManager"
+      run: docker build -f ./ReverseProxyManager/ReverseProxyManager/Dockerfile --tag reverse-proxy-manager:$(date +%s) --build-arg "BUILD_CONFIGURATION=Release" "./ReverseProxyManager/ReverseProxyManager"
   
