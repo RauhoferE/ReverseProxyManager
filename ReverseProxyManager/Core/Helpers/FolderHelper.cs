@@ -54,6 +54,20 @@ namespace Core.Helpers
             throw new NotSupportedException("Os not supported");
         }
 
+        public static string GetNginxConfigFolderPath()
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "nginx\\conf.d");
+            }
+            if (OperatingSystem.IsLinux())
+            {
+                return Path.Combine("/etc/nginx/conf.d");
+            }
+
+            throw new NotSupportedException("Os not supported");
+        }
+
         public static string GetSSlFolderPath()
         {
             if (OperatingSystem.IsWindows())
@@ -80,9 +94,9 @@ namespace Core.Helpers
                 Directory.CreateDirectory(GetSSlFolderPath());
             }
 
-            if (!Directory.Exists(GetNginxConfigFilePath()))
+            if (!Directory.Exists(GetNginxConfigFolderPath()))
             {
-                Directory.CreateDirectory(GetNginxConfigFilePath());
+                Directory.CreateDirectory(GetNginxConfigFolderPath());
             }
 
             //if (OperatingSystem.IsWindows())

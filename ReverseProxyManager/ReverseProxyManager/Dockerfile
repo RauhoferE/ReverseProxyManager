@@ -36,6 +36,7 @@ FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./ReverseProxyManager.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
@@ -44,6 +45,7 @@ COPY --from=build-frontend /frontend/wwwroot ./wwwroot
 USER root
 RUN mkdir /etc/data
 RUN mkdir -p /etc/nginx/conf.d
+RUN mkdir -p /etc/nginx/includes
 RUN mkdir -p /etc/ssl/certs/nginx
 RUN chown -R app:app /etc/data
 RUN chown -R app:app /etc/nginx
@@ -51,7 +53,10 @@ RUN chown -R app:app /etc/ssl/certs/nginx
 RUN chmod -R 755 /etc/ssl/certs/nginx
 RUN chmod -R 755 /etc/nginx
 RUN chmod -R 755 /etc/data
+RUN groupadd --system nginx && useradd --system --no-create-home -g nginx nginx
 RUN apt-get update && apt-get install -y nginx
+COPY "ReverseProxyManager/Nginx_Conf_Files/includes" /etc/nginx/includes
+COPY "ReverseProxyManager/Nginx_Conf_Files/nginx.conf" /etc/nginx
 COPY "ReverseProxyManager/docker-entrypoint.sh" .
 RUN chmod +x docker-entrypoint.sh
 USER root
