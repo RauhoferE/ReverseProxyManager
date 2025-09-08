@@ -78,7 +78,7 @@ namespace ReverseProxyManager.Services
             await this.dbContext.SaveChangesAsync();
         }
 
-        public async Task ApplyNewConfigAsync()
+        public async Task<string> ApplyNewConfigAsync()
         {
             var servers = this.dbContext.Servers.Include(x => x.Certificate).Where(x => x.Active);
             foreach (var server in servers)
@@ -88,7 +88,14 @@ namespace ReverseProxyManager.Services
 
             await this.dbContext.SaveChangesAsync();
             await this.fileService.CreateNginxConfigAsync(servers.ToList());
-            await this.processService.RestartNginxServer();
+            var res = await this.processService.RestartNginxServer();
+
+            if (!res.Item1)
+            {
+                return res.Item2;
+            }
+
+            return string.Empty;
         }
 
         public async Task DeleteServerAsync(int id)

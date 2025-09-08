@@ -15,6 +15,6 @@ namespace ReverseProxyManager.Services
         Task<List<ServerDto>> GetServerEntitiesAsync(string filter, string sortAfter, bool asc);
 
         // This generates the default.conf for the nginx server and restarts it
-        Task ApplyNewConfigAsync();
+        Task<string> ApplyNewConfigAsync();
     }
 }

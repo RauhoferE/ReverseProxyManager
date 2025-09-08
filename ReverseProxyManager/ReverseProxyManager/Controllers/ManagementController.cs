@@ -52,7 +52,13 @@ namespace ReverseProxyManager.Controllers
         [HttpGet(ApiRoutes.Management.ApplyConfig)]
         public async Task<IActionResult> ApplyNewConfig()
         {
-            await this.managementService.ApplyNewConfigAsync();
+            var res = await this.managementService.ApplyNewConfigAsync();
+
+            if (res != string.Empty)
+            {
+                return BadRequest(res); 
+            }
+
             return Ok();
         }
 
@@ -64,7 +70,7 @@ namespace ReverseProxyManager.Controllers
 
             if (!t.Item1)
             {
-                return BadRequest();
+                return BadRequest(t.Item2);
             }
 
             return Ok();
